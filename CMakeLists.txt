@@ -505,6 +505,10 @@ if(ENABLE_DECODE)
 	add_definitions(-DENABLE_DECODE)
 endif()
 
+if(ENABLE_HW_ACCESS)
+	add_definitions(-DENABLE_HW_ACCESS)
+endif()
+
 if(NOT DISABLE_WERROR)
 	add_definitions(-Werror)
 endif()
