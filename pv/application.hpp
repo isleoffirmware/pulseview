@@ -26,7 +26,9 @@
 #include <QStringList>
 #include <QTranslator>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "devicemanager.hpp"
 #include "globalsettings.hpp"
