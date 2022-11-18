@@ -22,7 +22,9 @@
 #include <libsigrokdecode/libsigrokdecode.h>
 #endif
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "pv/session.hpp"
 #include "pv/util.hpp"

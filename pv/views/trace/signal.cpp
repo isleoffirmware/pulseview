@@ -28,7 +28,9 @@
 #include <QLineEdit>
 #include <QMenu>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "pv/data/signalbase.hpp"
 

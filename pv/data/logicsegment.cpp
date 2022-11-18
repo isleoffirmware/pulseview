@@ -30,7 +30,9 @@
 #include "logic.hpp"
 #include "logicsegment.hpp"
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::lock_guard;
 using std::recursive_mutex;

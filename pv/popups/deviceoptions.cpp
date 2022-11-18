@@ -24,7 +24,9 @@
 
 #include <pv/prop/property.hpp>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::shared_ptr;
 

@@ -31,7 +31,9 @@
 #include <libsigrokflow/libsigrokflow.hpp>
 #endif
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <QCheckBox>
 #include <QDebug>

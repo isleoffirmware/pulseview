@@ -27,7 +27,9 @@
 #include <pv/prop/enum.hpp>
 #include <pv/prop/int.hpp>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using boost::optional;
 

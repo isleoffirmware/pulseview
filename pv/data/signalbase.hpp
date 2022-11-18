@@ -34,7 +34,9 @@
 #include <QTimer>
 #include <QVariant>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "segment.hpp"
 

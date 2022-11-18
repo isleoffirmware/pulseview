@@ -53,7 +53,9 @@
 #include "views/trace/signal.hpp"
 #include "views/trace/view.hpp"
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #ifdef ENABLE_FLOW
 #include <gstreamermm.h>

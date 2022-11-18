@@ -29,7 +29,9 @@
 #include <QLabel>
 #include <QSlider>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "enum.hpp"
 

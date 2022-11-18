@@ -27,7 +27,9 @@
 #include <QMenu>
 #include <QApplication>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <pv/widgets/popup.hpp>
 

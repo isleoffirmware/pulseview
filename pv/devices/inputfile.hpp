@@ -22,7 +22,9 @@
 
 #include <atomic>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "file.hpp"
 

@@ -39,7 +39,9 @@
 #include <QScrollBar>
 #include <QVBoxLayout>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "view.hpp"
 

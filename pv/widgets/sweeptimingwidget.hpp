@@ -20,7 +20,9 @@
 #ifndef PULSEVIEW_PV_WIDGETS_SWEEPTIMINGWIDGET_HPP
 #define PULSEVIEW_PV_WIDGETS_SWEEPTIMINGWIDGET_HPP
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrok/libsigrok.h>
+#endif
 
 #include <QComboBox>
 #include <QDoubleSpinBox>

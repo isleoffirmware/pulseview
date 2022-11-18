@@ -54,7 +54,9 @@
 #include <pv/data/decodesignal.hpp>
 #endif
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::back_inserter;
 using std::copy;

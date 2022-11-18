@@ -23,7 +23,9 @@
 
 #include <boost/none_t.hpp>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <pv/prop/bool.hpp>
 #include <pv/prop/double.hpp>

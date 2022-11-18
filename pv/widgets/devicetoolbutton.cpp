@@ -22,7 +22,9 @@
 #include <QTimer>
 #include <QToolTip>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <pv/devicemanager.hpp>
 #include <pv/devices/device.hpp>

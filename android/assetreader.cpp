@@ -25,7 +25,9 @@
 #include <QtCore/QFile>
 #include <QtCore/QStandardPaths>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrok/libsigrok.h>
+#endif
 
 using namespace pv;
 

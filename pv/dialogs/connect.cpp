@@ -19,7 +19,9 @@
 
 #include <cassert>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <QGroupBox>
 #include <QLabel>

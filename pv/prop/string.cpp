@@ -23,7 +23,9 @@
 #include <QLineEdit>
 #include <QSpinBox>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "string.hpp"
 

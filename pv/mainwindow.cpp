@@ -56,7 +56,9 @@
 #include "views/tabular_decoder/view.hpp"
 #endif
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::dynamic_pointer_cast;
 using std::make_shared;

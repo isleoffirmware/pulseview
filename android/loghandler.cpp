@@ -24,7 +24,10 @@
 #include <android/log.h>
 
 #include <cstdint>
+
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrok/libsigrok.h>
+#endif
 
 #include "android/loghandler.hpp"
 

@@ -20,7 +20,9 @@
 #ifndef PULSEVIEW_ANDROID_ASSETREADER_HPP
 #define PULSEVIEW_ANDROID_ASSETREADER_HPP
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::string;
 

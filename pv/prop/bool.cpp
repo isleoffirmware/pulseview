@@ -22,7 +22,9 @@
 #include <QCheckBox>
 #include <QDebug>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include "bool.hpp"
 

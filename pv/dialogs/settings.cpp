@@ -49,7 +49,9 @@
 #include "pv/logging.hpp"
 #include "pv/widgets/colorbutton.hpp"
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #ifdef ENABLE_DECODE
 #include <libsigrokdecode/libsigrokdecode.h>

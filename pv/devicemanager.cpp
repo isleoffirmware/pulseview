@@ -27,7 +27,9 @@
 #include <stdexcept>
 #include <string>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 #include <QApplication>
 #include <QDebug>

@@ -39,7 +39,9 @@
 #include <pv/globalsettings.hpp>
 #include <pv/session.hpp>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 
 using std::deque;
 using std::max;

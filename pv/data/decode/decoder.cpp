@@ -21,7 +21,9 @@
 
 #include <QDebug>
 
+#ifdef ENABLE_HW_ACCESS
 #include <libsigrokcxx/libsigrokcxx.hpp>
+#endif
 #include <libsigrokdecode/libsigrokdecode.h>
 
 #include "decoder.hpp"
