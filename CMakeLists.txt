@@ -92,7 +92,6 @@ if(ENABLE_HW_ACCESS)
 	if(NOT LIBSRCXX_FOUND OR NOT LIBSRCXX_VERSION)
 		message(FATAL_ERROR "libsigrok C++ bindings missing, check libsigrok's 'configure' output (missing dependencies?)")
 	endif()
-	pkg_check_modules(PKGDEPS REQUIRED ${PKGDEPS})
 endif()
 
 if(ENABLE_DECODE)
@@ -102,6 +101,9 @@ endif()
 if(ANDROID)
 	list(APPEND PKGDEPS libsigrokandroidutils>=0.1.0)
 endif()
+
+find_package(PkgConfig)
+pkg_check_modules(PKGDEPS REQUIRED ${PKGDEPS})
 
 set(CMAKE_AUTOMOC TRUE)
 
