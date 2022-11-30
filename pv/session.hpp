@@ -161,7 +161,7 @@ public:
 	void restore_settings(QSettings &settings);
 
 	/**
-	 * Attempts to set device instance, may fall back to demo if needed
+	 * Attempts to set device instance, may fall back to fifo if needed
 	 */
 	void select_device(shared_ptr<devices::Device> device);
 
