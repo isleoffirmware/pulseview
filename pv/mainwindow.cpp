@@ -414,12 +414,9 @@ void MainWindow::add_session_with_file(string open_file_name,
 
 void MainWindow::add_default_session()
 {
-	// Size is 0 currently...
-	std::cout << "[mainwindow] sessions_.size(): " << sessions_.size() << std::endl;
-
 	// Only add the default session if there would be no session otherwise
-	// if (sessions_.size() > 0)
-	// 	return;
+	if (sessions_.size() > 0)
+		return;
 
 	shared_ptr<Session> session = add_session();
 
@@ -427,10 +424,8 @@ void MainWindow::add_default_session()
 	// found with user supplied scan specs (if applicable). Then try
 	// one of the auto detected devices that are not the fifo device.
 	// Pick fifo in the absence of "genuine" hardware devices.
-	shared_ptr<devices::HardwareDevice> user_device, fifo_device, other_device;
+	shared_ptr<devices::HardwareDevice> user_device, other_device, fifo_device;
 	for (const shared_ptr<devices::HardwareDevice>& dev : device_manager_.devices()) {
-		std::cout << "[mainwindow] Hardware device driver name #1: " << dev->hardware_device()->driver()->name() << std::endl;
-
 		if (dev == device_manager_.user_spec_device()) {
 			user_device = dev;
 		} else if (dev->hardware_device()->driver()->name() == "virtual") {
@@ -438,18 +433,13 @@ void MainWindow::add_default_session()
 		} else {
 			other_device = dev;
 		}
-
-		std::cout << "[mainwindow] ##1" << std::endl;
 	}
 	if (user_device)
 		session->select_device(user_device);
 	else if (other_device)
 		session->select_device(other_device);
-	else {
-		std::cout << "[mainwindow] ##2" << std::endl;
-		session->select_device(fifo_device); // NOTE: this doesn't result in calling set_default_device()
-		// session->set_default_device();
-	}
+	else
+		session->select_device(fifo_device);
 }
 
 void MainWindow::save_sessions()
@@ -463,8 +453,6 @@ void MainWindow::save_sessions()
 			shared_ptr<devices::HardwareDevice> device =
 				dynamic_pointer_cast< devices::HardwareDevice >
 				(session->device());
-
-			std::cout << "[mainwindow] Hardware device driver name #2: " << device->hardware_device()->driver()->name() << std::endl;
 
 			if (device &&
 				device->hardware_device()->driver()->name() == "virtual")

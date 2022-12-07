@@ -20,7 +20,6 @@
 #include "devicemanager.hpp"
 #include "session.hpp"
 
-#include <iostream>
 #include <cassert>
 #include <functional>
 #include <memory>
@@ -62,8 +61,6 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 	std::string driver, bool do_scan) :
 	context_(context)
 {
-	std::cout << "[devicemanager] Device manager" << std::endl;
-
 	unique_ptr<QProgressDialog> progress(new QProgressDialog("",
 		QObject::tr("Cancel"), 0, context->drivers().size() + 1));
 	progress->setWindowModality(Qt::WindowModal);
@@ -93,12 +90,10 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 			break;
 
 		// Skip drivers we won't scan anyway
-		if (!driver_supported(entry.second)) {
-			std::cout << "[devicemanager] Driver not supported: " << entry.first << ", " << entry.second << std::endl;	
+		if (!driver_supported(entry.second))
 			continue;
-		}
 
-		progress->setLabelText(QObject::tr("[devicemanager] Scanning for devices that driver %1 can access...")
+		progress->setLabelText(QObject::tr("Scanning for devices that driver %1 can access...")
 			.arg(QString::fromStdString(entry.first)));
 
 		if (entry.first == user_name)
@@ -266,21 +261,14 @@ DeviceManager::driver_scan(
 		for (shared_ptr<sigrok::HardwareDevice>& device : devices) {
 			const shared_ptr<devices::HardwareDevice> d(
 				new devices::HardwareDevice(context_, device));
-
-			std::cout << "[devicemanager] Adding scanned device to main list" << std::endl;
-
 			driver_devices.push_back(d);
 		}
-
-		std::cout << "[devicemanager] Inserting device..." << std::endl;
 
 		devices_.insert(devices_.end(), driver_devices.begin(),
 			driver_devices.end());
 		devices_.sort(bind(&DeviceManager::compare_devices, this, _1, _2));
 		driver_devices.sort(bind(
 			&DeviceManager::compare_devices, this, _1, _2));
-
-		std::cout << "[devicemanager] devices_.size(): " << devices_.size() << std::endl;
 
 	} catch (const sigrok::Error &e) {
 		qWarning() << QApplication::tr("Error when scanning device driver '%1': %2").
