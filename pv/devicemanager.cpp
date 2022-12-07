@@ -267,7 +267,6 @@ DeviceManager::driver_scan(
 			const shared_ptr<devices::HardwareDevice> d(
 				new devices::HardwareDevice(context_, device));
 
-			// TODO: we don't get here...
 			std::cout << "[devicemanager] Adding scanned device to main list" << std::endl;
 
 			driver_devices.push_back(d);

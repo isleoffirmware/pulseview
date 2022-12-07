@@ -447,8 +447,8 @@ void MainWindow::add_default_session()
 		session->select_device(other_device);
 	else {
 		std::cout << "[mainwindow] ##2" << std::endl;
-		// session->select_device(fifo_device); // NOTE: this doesn't result in calling set_default_device()
-		session->set_default_device();
+		session->select_device(fifo_device); // NOTE: this doesn't result in calling set_default_device()
+		// session->set_default_device();
 	}
 }
 
