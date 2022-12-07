@@ -20,6 +20,7 @@
 #include "devicemanager.hpp"
 #include "session.hpp"
 
+#include <iostream>
 #include <cassert>
 #include <functional>
 #include <memory>
@@ -61,6 +62,8 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 	std::string driver, bool do_scan) :
 	context_(context)
 {
+	std::cout << "Device manager" << std::endl;
+
 	unique_ptr<QProgressDialog> progress(new QProgressDialog("",
 		QObject::tr("Cancel"), 0, context->drivers().size() + 1));
 	progress->setWindowModality(Qt::WindowModal);
@@ -90,8 +93,11 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 			break;
 
 		// Skip drivers we won't scan anyway
-		if (!driver_supported(entry.second))
+		if (!driver_supported(entry.second)) {
+			// NOTE: virtual driver not supported!!!
+			std::cout << "Driver not supported: " << entry.first << ", " << entry.second << std::endl;	
 			continue;
+		}
 
 		progress->setLabelText(QObject::tr("Scanning for devices that driver %1 can access...")
 			.arg(QString::fromStdString(entry.first)));
@@ -233,6 +239,8 @@ bool DeviceManager::driver_supported(shared_ptr<Driver> driver) const
 	 * @todo Add support for non-monotonic devices (DMMs, sensors, etc).
 	 */
 	const auto keys = driver->config_keys();
+
+	// std::cout << "Keys: " << keys << std::endl;
 
 	return keys.count(ConfigKey::LOGIC_ANALYZER) | keys.count(ConfigKey::OSCILLOSCOPE);
 }

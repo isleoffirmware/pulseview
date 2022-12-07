@@ -414,9 +414,12 @@ void MainWindow::add_session_with_file(string open_file_name,
 
 void MainWindow::add_default_session()
 {
+	// Size is 0 currently...
+	std::cout << "sessions_.size(): " << sessions_.size() << std::endl;
+
 	// Only add the default session if there would be no session otherwise
-	if (sessions_.size() > 0)
-		return;
+	// if (sessions_.size() > 0)
+	// 	return;
 
 	shared_ptr<Session> session = add_session();
 
@@ -424,12 +427,12 @@ void MainWindow::add_default_session()
 	// found with user supplied scan specs (if applicable). Then try
 	// one of the auto detected devices that are not the fifo device.
 	// Pick fifo in the absence of "genuine" hardware devices.
-	shared_ptr<devices::HardwareDevice> user_device, other_device, fifo_device;
+	shared_ptr<devices::HardwareDevice> user_device, other_device;
 	for (const shared_ptr<devices::HardwareDevice>& dev : device_manager_.devices()) {
+		std::cout << "Hardware device driver name: " << dev->hardware_device()->driver()->name() << std::endl;
+
 		if (dev == device_manager_.user_spec_device()) {
 			user_device = dev;
-		} else if (dev->hardware_device()->driver()->name() == "virtual") {
-			fifo_device = dev;
 		} else {
 			other_device = dev;
 		}
@@ -439,7 +442,7 @@ void MainWindow::add_default_session()
 	else if (other_device)
 		session->select_device(other_device);
 	else
-		session->select_device(fifo_device);
+		session->set_default_device();
 }
 
 void MainWindow::save_sessions()
@@ -453,6 +456,8 @@ void MainWindow::save_sessions()
 			shared_ptr<devices::HardwareDevice> device =
 				dynamic_pointer_cast< devices::HardwareDevice >
 				(session->device());
+
+			std::cout << "Hardware device driver name: " << device->hardware_device()->driver()->name() << std::endl;
 
 			if (device &&
 				device->hardware_device()->driver()->name() == "virtual")

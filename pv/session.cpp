@@ -17,6 +17,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include <cassert>
 #include <memory>
 #include <mutex>
@@ -633,12 +634,18 @@ void Session::set_default_device()
 	const list< shared_ptr<devices::HardwareDevice> > &devices =
 		device_manager_.devices();
 
+	// Devices: currently zero...
+	std::cout << "Devices: " << devices.size() << std::endl;
+
 	if (devices.empty())
 		return;
 
 	// Try and find the fifo device and select that by default
 	const auto iter = find_if(devices.begin(), devices.end(),
 		[] (const shared_ptr<devices::HardwareDevice> &d) {
+
+			std::cout << "Hardware device driver name: " << d->hardware_device()->driver()->name() << std::endl;
+
 			return d->hardware_device()->driver()->name() == "virtual"; });
 	set_device((iter == devices.end()) ? devices.front() : *iter);
 }
