@@ -631,10 +631,12 @@ void Session::set_device(shared_ptr<devices::Device> device)
 
 void Session::set_default_device()
 {
+	// TODO: debug segfault using gdb
+	std::cout << "[session] set_default_device()" << std::endl;
+
 	const list< shared_ptr<devices::HardwareDevice> > &devices =
 		device_manager_.devices();
 
-	// Devices: currently zero...
 	std::cout << "[session] devices.size(): " << devices.size() << std::endl;
 
 	if (devices.empty())
