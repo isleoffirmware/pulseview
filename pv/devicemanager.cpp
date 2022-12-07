@@ -62,7 +62,7 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 	std::string driver, bool do_scan) :
 	context_(context)
 {
-	std::cout << "Device manager" << std::endl;
+	std::cout << "[devicemanager] Device manager" << std::endl;
 
 	unique_ptr<QProgressDialog> progress(new QProgressDialog("",
 		QObject::tr("Cancel"), 0, context->drivers().size() + 1));
@@ -94,12 +94,11 @@ DeviceManager::DeviceManager(shared_ptr<Context> context,
 
 		// Skip drivers we won't scan anyway
 		if (!driver_supported(entry.second)) {
-			// NOTE: virtual driver not supported!!!
-			std::cout << "Driver not supported: " << entry.first << ", " << entry.second << std::endl;	
+			std::cout << "[devicemanager] Driver not supported: " << entry.first << ", " << entry.second << std::endl;	
 			continue;
 		}
 
-		progress->setLabelText(QObject::tr("Scanning for devices that driver %1 can access...")
+		progress->setLabelText(QObject::tr("[devicemanager] Scanning for devices that driver %1 can access...")
 			.arg(QString::fromStdString(entry.first)));
 
 		if (entry.first == user_name)
@@ -240,8 +239,6 @@ bool DeviceManager::driver_supported(shared_ptr<Driver> driver) const
 	 */
 	const auto keys = driver->config_keys();
 
-	// std::cout << "Keys: " << keys << std::endl;
-
 	return keys.count(ConfigKey::LOGIC_ANALYZER) | keys.count(ConfigKey::OSCILLOSCOPE);
 }
 
@@ -269,14 +266,22 @@ DeviceManager::driver_scan(
 		for (shared_ptr<sigrok::HardwareDevice>& device : devices) {
 			const shared_ptr<devices::HardwareDevice> d(
 				new devices::HardwareDevice(context_, device));
+
+			// TODO: we don't get here...
+			std::cout << "[devicemanager] Adding scanned device to main list" << std::endl;
+
 			driver_devices.push_back(d);
 		}
+
+		std::cout << "[devicemanager] Inserting device..." << std::endl;
 
 		devices_.insert(devices_.end(), driver_devices.begin(),
 			driver_devices.end());
 		devices_.sort(bind(&DeviceManager::compare_devices, this, _1, _2));
 		driver_devices.sort(bind(
 			&DeviceManager::compare_devices, this, _1, _2));
+
+		std::cout << "[devicemanager] devices_.size(): " << devices_.size() << std::endl;
 
 	} catch (const sigrok::Error &e) {
 		qWarning() << QApplication::tr("Error when scanning device driver '%1': %2").

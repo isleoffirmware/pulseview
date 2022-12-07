@@ -415,7 +415,7 @@ void MainWindow::add_session_with_file(string open_file_name,
 void MainWindow::add_default_session()
 {
 	// Size is 0 currently...
-	std::cout << "sessions_.size(): " << sessions_.size() << std::endl;
+	std::cout << "[mainwindow] sessions_.size(): " << sessions_.size() << std::endl;
 
 	// Only add the default session if there would be no session otherwise
 	// if (sessions_.size() > 0)
@@ -429,7 +429,7 @@ void MainWindow::add_default_session()
 	// Pick fifo in the absence of "genuine" hardware devices.
 	shared_ptr<devices::HardwareDevice> user_device, other_device;
 	for (const shared_ptr<devices::HardwareDevice>& dev : device_manager_.devices()) {
-		std::cout << "Hardware device driver name: " << dev->hardware_device()->driver()->name() << std::endl;
+		std::cout << "[mainwindow] Hardware device driver name: " << dev->hardware_device()->driver()->name() << std::endl;
 
 		if (dev == device_manager_.user_spec_device()) {
 			user_device = dev;
@@ -457,7 +457,7 @@ void MainWindow::save_sessions()
 				dynamic_pointer_cast< devices::HardwareDevice >
 				(session->device());
 
-			std::cout << "Hardware device driver name: " << device->hardware_device()->driver()->name() << std::endl;
+			std::cout << "[mainwindow] Hardware device driver name: " << device->hardware_device()->driver()->name() << std::endl;
 
 			if (device &&
 				device->hardware_device()->driver()->name() == "virtual")

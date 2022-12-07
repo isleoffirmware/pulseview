@@ -635,7 +635,7 @@ void Session::set_default_device()
 		device_manager_.devices();
 
 	// Devices: currently zero...
-	std::cout << "Devices: " << devices.size() << std::endl;
+	std::cout << "[session] devices.size(): " << devices.size() << std::endl;
 
 	if (devices.empty())
 		return;
@@ -644,7 +644,7 @@ void Session::set_default_device()
 	const auto iter = find_if(devices.begin(), devices.end(),
 		[] (const shared_ptr<devices::HardwareDevice> &d) {
 
-			std::cout << "Hardware device driver name: " << d->hardware_device()->driver()->name() << std::endl;
+			std::cout << "[session] Hardware device driver name: " << d->hardware_device()->driver()->name() << std::endl;
 
 			return d->hardware_device()->driver()->name() == "virtual"; });
 	set_device((iter == devices.end()) ? devices.front() : *iter);
