@@ -147,6 +147,8 @@ private Q_SLOTS:
 
 	void on_close_current_tab();
 
+	void on_renode_timeout();
+
 private:
 	DeviceManager &device_manager_;
 

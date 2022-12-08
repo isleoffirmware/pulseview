@@ -37,6 +37,7 @@
 #include <QSettings>
 #include <QShortcut>
 #include <QWidget>
+#include <QTimer>
 
 #include "mainwindow.hpp"
 
@@ -663,6 +664,7 @@ void MainWindow::on_run_stop_clicked()
 {
 	GlobalSettings settings;
 	bool all_sessions = settings.value(GlobalSettings::Key_General_StartAllSessions).toBool();
+	bool session_started = false;
 
 	if (all_sessions)
 	{
@@ -687,8 +689,11 @@ void MainWindow::on_run_stop_clicked()
 			if (any_running)
 				s->stop_capture();
 			else
+			{
 				s->start_capture([&](QString message) {
 					show_session_error("Capture failed", message); });
+				session_started = true;
+			}
 	} else {
 
 		shared_ptr<Session> session = last_focused_session_;
@@ -700,12 +705,21 @@ void MainWindow::on_run_stop_clicked()
 		case Session::Stopped:
 			session->start_capture([&](QString message) {
 				show_session_error("Capture failed", message); });
+			session_started = true;
 			break;
 		case Session::AwaitingTrigger:
 		case Session::Running:
 			session->stop_capture();
 			break;
 		}
+	}
+
+	if (session_started)
+	{
+		// NOTE: this hardcoded time could be a command line option
+		// but this will be removed entirely by SW-14 when renode
+		// controls when we start/stop acquisition.
+		QTimer::singleShot(2000, this, SLOT(on_renode_timeout()));
 	}
 }
 
@@ -975,6 +989,11 @@ void MainWindow::on_close_current_tab()
 	int tab = session_selector_.currentIndex();
 
 	on_tab_close_requested(tab);
+}
+
+void MainWindow::on_renode_timeout()
+{
+	on_run_stop_clicked();	
 }
 
 } // namespace pv
