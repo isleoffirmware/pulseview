@@ -359,6 +359,9 @@ int main(int argc, char *argv[])
 				qWarning() << "Could not prepare signal handler.";
 #endif
 
+			// Start a trace immediately
+			w.on_run_stop_clicked();
+
 			// Run the application
 			ret = a.exec();
 		}
