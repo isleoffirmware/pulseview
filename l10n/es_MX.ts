@@ -72,66 +72,66 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::MainWindow</name>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="73"/>
+        <location filename="../pv/mainwindow.cpp" line="70"/>
         <source>PulseView</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="282"/>
+        <location filename="../pv/mainwindow.cpp" line="279"/>
         <source>Decoder Selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="335"/>
+        <location filename="../pv/mainwindow.cpp" line="332"/>
         <source>Session %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="517"/>
+        <location filename="../pv/mainwindow.cpp" line="514"/>
         <source>Create New Session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="523"/>
+        <location filename="../pv/mainwindow.cpp" line="520"/>
         <source>Start/Stop Acquisition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="531"/>
+        <location filename="../pv/mainwindow.cpp" line="528"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="583"/>
+        <location filename="../pv/mainwindow.cpp" line="580"/>
         <source>Reload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../pv/mainwindow.cpp" line="580"/>
         <location filename="../pv/mainwindow.cpp" line="583"/>
-        <location filename="../pv/mainwindow.cpp" line="586"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="592"/>
+        <location filename="../pv/mainwindow.cpp" line="589"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="638"/>
-        <location filename="../pv/mainwindow.cpp" line="877"/>
-        <location filename="../pv/mainwindow.cpp" line="903"/>
+        <location filename="../pv/mainwindow.cpp" line="635"/>
+        <location filename="../pv/mainwindow.cpp" line="860"/>
+        <location filename="../pv/mainwindow.cpp" line="886"/>
         <source>Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="639"/>
+        <location filename="../pv/mainwindow.cpp" line="636"/>
         <source>There is unsaved data. Close anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="878"/>
-        <location filename="../pv/mainwindow.cpp" line="904"/>
+        <location filename="../pv/mainwindow.cpp" line="861"/>
+        <location filename="../pv/mainwindow.cpp" line="887"/>
         <source>This session contains unsaved data. Close it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
