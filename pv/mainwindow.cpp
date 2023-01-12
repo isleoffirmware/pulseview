@@ -422,14 +422,14 @@ void MainWindow::add_default_session()
 
 	// Check the list of available devices. Prefer the one that was
 	// found with user supplied scan specs (if applicable). Then try
-	// one of the auto detected devices that are not the fifo device.
-	// Pick fifo in the absence of "genuine" hardware devices.
-	shared_ptr<devices::HardwareDevice> user_device, other_device, fifo_device;
+	// one of the auto detected devices that are not the demo device.
+	// Pick demo in the absence of "genuine" hardware devices.
+	shared_ptr<devices::HardwareDevice> user_device, other_device, demo_device;
 	for (const shared_ptr<devices::HardwareDevice>& dev : device_manager_.devices()) {
 		if (dev == device_manager_.user_spec_device()) {
 			user_device = dev;
-		} else if (dev->hardware_device()->driver()->name() == "virtual") {
-			fifo_device = dev;
+		} else if (dev->hardware_device()->driver()->name() == "demo") {
+			demo_device = dev;
 		} else {
 			other_device = dev;
 		}
@@ -439,7 +439,7 @@ void MainWindow::add_default_session()
 	else if (other_device)
 		session->select_device(other_device);
 	else
-		session->select_device(fifo_device);
+		session->select_device(demo_device);
 }
 
 void MainWindow::save_sessions()
@@ -448,14 +448,14 @@ void MainWindow::save_sessions()
 	int id = 0;
 
 	for (shared_ptr<Session>& session : sessions_) {
-		// Ignore sessions using the fifo device or no device at all
+		// Ignore sessions using the demo device or no device at all
 		if (session->device()) {
 			shared_ptr<devices::HardwareDevice> device =
 				dynamic_pointer_cast< devices::HardwareDevice >
 				(session->device());
 
 			if (device &&
-				device->hardware_device()->driver()->name() == "virtual")
+				device->hardware_device()->driver()->name() == "demo")
 				continue;
 
 			settings.beginGroup("Session" + QString::number(id++));

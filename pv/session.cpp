@@ -476,7 +476,7 @@ void Session::restore_settings(QSettings &settings)
 		map<string, string> dev_info;
 		list<string> key_list;
 
-		// Re-select last used device if possible but only if it's not demo/fifo
+		// Re-select last used device if possible but only if it's not demo
 		settings.beginGroup("device");
 		key_list.emplace_back("vendor");
 		key_list.emplace_back("model");
@@ -636,10 +636,10 @@ void Session::set_default_device()
 	if (devices.empty())
 		return;
 
-	// Try and find the fifo device and select that by default
+	// Try and find the demo device and select that by default
 	const auto iter = find_if(devices.begin(), devices.end(),
 		[] (const shared_ptr<devices::HardwareDevice> &d) {
-			return d->hardware_device()->driver()->name() == "virtual"; });
+			return d->hardware_device()->driver()->name() == "demo"; });
 	set_device((iter == devices.end()) ? devices.front() : *iter);
 }
 
