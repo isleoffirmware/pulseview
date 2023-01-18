@@ -30,7 +30,6 @@
 #include <QToolButton>
 
 #include "session.hpp"
-#include "subwindows/subwindowbase.hpp"
 
 using std::list;
 using std::map;
@@ -85,9 +84,6 @@ public:
 
 	void remove_view(shared_ptr<ViewBase> view);
 
-	shared_ptr<subwindows::SubWindowBase> add_subwindow(
-		subwindows::SubWindowType type, Session &session);
-
 	shared_ptr<Session> add_session();
 
 	void remove_session(shared_ptr<Session> session);
@@ -97,15 +93,9 @@ public:
 
 	void add_default_session();
 
-	void save_sessions();
-	void restore_sessions();
-
 private:
 	void setup_ui();
 	void update_acq_button(Session *session);
-
-	void save_ui_settings();
-	void restore_ui_settings();
 
 	shared_ptr<Session> get_tab_session(int index) const;
 
@@ -125,7 +115,6 @@ private Q_SLOTS:
 	void on_focused_session_changed(shared_ptr<Session> session);
 
 	void on_new_session_clicked();
-	void on_settings_clicked();
 
 	void on_session_name_changed();
 	void on_session_device_changed();
@@ -138,7 +127,6 @@ private Q_SLOTS:
 	void on_tab_close_requested(int index);
 
 	void on_show_decoder_selector(Session *session);
-	void on_sub_window_close_clicked();
 
 	void on_view_colored_bg_shortcut();
 	void on_view_sticky_scrolling_shortcut();
@@ -154,7 +142,6 @@ private:
 	shared_ptr<Session> last_focused_session_;
 
 	map< QDockWidget*, shared_ptr<views::ViewBase> > view_docks_;
-	map< QDockWidget*, shared_ptr<subwindows::SubWindowBase> > sub_windows_;
 
 	map< shared_ptr<Session>, QMainWindow*> session_windows_;
 

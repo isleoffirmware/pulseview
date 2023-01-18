@@ -43,9 +43,7 @@
 #include "application.hpp"
 #include "devicemanager.hpp"
 #include "devices/hardwaredevice.hpp"
-#include "dialogs/settings.hpp"
 #include "globalsettings.hpp"
-#include "toolbars/mainbar.hpp"
 #include "util.hpp"
 #include "views/trace/view.hpp"
 #include "views/trace/standardbar.hpp"
@@ -65,8 +63,6 @@ using std::string;
 
 namespace pv {
 
-using toolbars::MainBar;
-
 const QString MainWindow::WindowTitle = tr("PulseView");
 
 MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
@@ -78,7 +74,6 @@ MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
 	icon_grey_(":/icons/status-grey.svg")
 {
 	setup_ui();
-	restore_ui_settings();
 }
 
 MainWindow::~MainWindow()
@@ -88,8 +83,6 @@ MainWindow::~MainWindow()
 
 	while (!sessions_.empty())
 		remove_session(sessions_.front());
-
-	sub_windows_.clear();
 }
 
 void MainWindow::show_session_error(const QString text, const QString info_text)
@@ -142,14 +135,8 @@ shared_ptr<views::ViewBase> MainWindow::add_view(views::ViewType type,
 
 	assert(main_window);
 
-	shared_ptr<MainBar> main_bar = session.main_bar();
-
 	// Only use the view type in the name if it's not the main view
-	QString title;
-	if (main_bar)
-		title = QString("%1 (%2)").arg(session.name(), views::ViewTypeNames[type]);
-	else
-		title = session.name();
+	QString title = session.name();
 
 	QDockWidget* dock = new QDockWidget(title, main_window);
 	dock->setObjectName(title);
@@ -161,7 +148,7 @@ shared_ptr<views::ViewBase> MainWindow::add_view(views::ViewType type,
 
 	if (type == views::ViewTypeTrace)
 		// This view will be the main view if there's no main bar yet
-		v = make_shared<views::trace::View>(session, (main_bar ? false : true), dock_main);
+		v = make_shared<views::trace::View>(session, true, dock_main);
 #ifdef ENABLE_DECODE
 	if (type == views::ViewTypeDecoderBinary)
 		v = make_shared<views::decoder_binary::View>(session, false, dock_main);
@@ -192,38 +179,6 @@ shared_ptr<views::ViewBase> MainWindow::add_view(views::ViewType type,
 	connect(&session, SIGNAL(trigger_event(int, util::Timestamp)),
 		qobject_cast<views::ViewBase*>(v.get()),
 		SLOT(trigger_event(int, util::Timestamp)));
-
-	if (type == views::ViewTypeTrace) {
-		views::trace::View *tv =
-			qobject_cast<views::trace::View*>(v.get());
-
-		if (!main_bar) {
-			/* Initial view, create the main bar */
-			main_bar = make_shared<MainBar>(session, this, tv);
-			dock_main->addToolBar(main_bar.get());
-			session.set_main_bar(main_bar);
-
-			connect(main_bar.get(), SIGNAL(new_view(Session*, int)),
-				this, SLOT(on_new_view(Session*, int)));
-			connect(main_bar.get(), SIGNAL(show_decoder_selector(Session*)),
-				this, SLOT(on_show_decoder_selector(Session*)));
-
-			main_bar->action_view_show_cursors()->setChecked(tv->cursors_shown());
-
-			/* For the main view we need to prevent the dock widget from
-			 * closing itself when its close button is clicked. This is
-			 * so we can confirm with the user first. Regular views don't
-			 * need this */
-			close_btn->disconnect(SIGNAL(clicked()), dock, SLOT(close()));
-		} else {
-			/* Additional view, create a standard bar */
-			pv::views::trace::StandardBar *standard_bar =
-				new pv::views::trace::StandardBar(session, this, tv);
-			dock_main->addToolBar(standard_bar);
-
-			standard_bar->action_view_show_cursors()->setChecked(tv->cursors_shown());
-		}
-	}
 
 	v->setFocus();
 
@@ -256,74 +211,6 @@ void MainWindow::remove_view(shared_ptr<views::ViewBase> view)
 				break;
 			}
 	}
-}
-
-shared_ptr<subwindows::SubWindowBase> MainWindow::add_subwindow(
-	subwindows::SubWindowType type, Session &session)
-{
-	GlobalSettings settings;
-	shared_ptr<subwindows::SubWindowBase> w;
-
-	QMainWindow *main_window = nullptr;
-	for (auto& entry : session_windows_)
-		if (entry.first.get() == &session)
-			main_window = entry.second;
-
-	assert(main_window);
-
-	QString title = "";
-
-	switch (type) {
-#ifdef ENABLE_DECODE
-		case subwindows::SubWindowTypeDecoderSelector:
-			title = tr("Decoder Selector");
-			break;
-#endif
-		default:
-			break;
-	}
-
-	QDockWidget* dock = new QDockWidget(title, main_window);
-	dock->setObjectName(title);
-	main_window->addDockWidget(Qt::TopDockWidgetArea, dock);
-
-	// Insert a QMainWindow into the dock widget to allow for a tool bar
-	QMainWindow *dock_main = new QMainWindow(dock);
-	dock_main->setWindowFlags(Qt::Widget);  // Remove Qt::Window flag
-
-#ifdef ENABLE_DECODE
-	if (type == subwindows::SubWindowTypeDecoderSelector)
-		w = make_shared<subwindows::decoder_selector::SubWindow>(session, dock_main);
-#endif
-
-	if (!w)
-		return nullptr;
-
-	sub_windows_[dock] = w;
-	dock_main->setCentralWidget(w.get());
-	dock->setWidget(dock_main);
-
-	dock->setContextMenuPolicy(Qt::PreventContextMenu);
-	dock->setFeatures(QDockWidget::DockWidgetMovable |
-		QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
-
-	QAbstractButton *close_btn =
-		dock->findChildren<QAbstractButton*>  // clazy:exclude=detaching-temporary
-			("qt_dockwidget_closebutton").front();
-
-	// Allow all subwindows to be closed via ESC.
-	close_btn->setShortcut(QKeySequence(Qt::Key_Escape));
-
-	connect(close_btn, SIGNAL(clicked(bool)),
-		this, SLOT(on_sub_window_close_clicked()));
-
-	if (w->has_toolbar())
-		dock_main->addToolBar(w->create_toolbar(dock_main));
-
-	if (w->minimum_width() > 0)
-		dock->setMinimumSize(w->minimum_width(), 0);
-
-	return w;
 }
 
 shared_ptr<Session> MainWindow::add_session()
@@ -442,47 +329,6 @@ void MainWindow::add_default_session()
 		session->select_device(demo_device);
 }
 
-void MainWindow::save_sessions()
-{
-	QSettings settings;
-	int id = 0;
-
-	for (shared_ptr<Session>& session : sessions_) {
-		// Ignore sessions using the demo device or no device at all
-		if (session->device()) {
-			shared_ptr<devices::HardwareDevice> device =
-				dynamic_pointer_cast< devices::HardwareDevice >
-				(session->device());
-
-			if (device &&
-				device->hardware_device()->driver()->name() == "demo")
-				continue;
-
-			settings.beginGroup("Session" + QString::number(id++));
-			settings.remove("");  // Remove all keys in this group
-			session->save_settings(settings);
-			settings.endGroup();
-		}
-	}
-
-	settings.setValue("sessions", id);
-}
-
-void MainWindow::restore_sessions()
-{
-	QSettings settings;
-	int i, session_count;
-
-	session_count = settings.value("sessions", 0).toInt();
-
-	for (i = 0; i < session_count; i++) {
-		settings.beginGroup("Session" + QString::number(i));
-		shared_ptr<Session> session = add_session();
-		session->restore_settings(settings);
-		settings.endGroup();
-	}
-}
-
 void MainWindow::setup_ui()
 {
 	setObjectName(QString::fromUtf8("MainWindow"));
@@ -556,8 +402,6 @@ void MainWindow::setup_ui()
 		this, SLOT(on_new_session_clicked()));
 	connect(run_stop_button_, SIGNAL(clicked(bool)),
 		this, SLOT(on_run_stop_clicked()));
-	connect(settings_button_, SIGNAL(clicked(bool)),
-		this, SLOT(on_settings_clicked()));
 
 	connect(&session_selector_, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(on_tab_close_requested(int)));
@@ -589,31 +433,6 @@ void MainWindow::update_acq_button(Session *session)
 		run_caption : tr("Stop"));
 }
 
-void MainWindow::save_ui_settings()
-{
-	QSettings settings;
-
-	settings.beginGroup("MainWindow");
-	settings.setValue("state", saveState());
-	settings.setValue("geometry", saveGeometry());
-	settings.endGroup();
-}
-
-void MainWindow::restore_ui_settings()
-{
-	QSettings settings;
-
-	settings.beginGroup("MainWindow");
-
-	if (settings.contains("geometry")) {
-		restoreGeometry(settings.value("geometry").toByteArray());
-		restoreState(settings.value("state").toByteArray());
-	} else
-		resize(1000, 720);
-
-	settings.endGroup();
-}
-
 shared_ptr<Session> MainWindow::get_tab_session(int index) const
 {
 	// Find the session that belongs to the tab's main window
@@ -637,8 +456,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 		QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)) {
 		event->ignore();
 	} else {
-		save_ui_settings();
-		save_sessions();
 		event->accept();
 	}
 }
@@ -757,12 +574,6 @@ void MainWindow::on_focused_session_changed(shared_ptr<Session> session)
 void MainWindow::on_new_session_clicked()
 {
 	add_session();
-}
-
-void MainWindow::on_settings_clicked()
-{
-	dialogs::Settings dlg(device_manager_);
-	dlg.exec();
 }
 
 void MainWindow::on_session_name_changed()
@@ -915,27 +726,6 @@ void MainWindow::on_show_decoder_selector(Session *session)
 #else
 	(void)session;
 #endif
-}
-
-void MainWindow::on_sub_window_close_clicked()
-{
-	// Find the dock widget that contains the close button that was clicked
-	QObject *w = QObject::sender();
-	QDockWidget *dock = nullptr;
-
-	while (w) {
-	    dock = qobject_cast<QDockWidget*>(w);
-	    if (dock)
-	        break;
-	    w = w->parent();
-	}
-
-	sub_windows_.erase(dock);
-	dock->close();
-
-	// Restore focus to the last used main view
-	if (last_focused_session_)
-		last_focused_session_->main_view()->setFocus();
 }
 
 void MainWindow::on_view_colored_bg_shortcut()

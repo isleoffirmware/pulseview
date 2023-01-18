@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
 	shared_ptr<sigrok::Context> context;
 	string open_file_format, open_setup_file, driver;
 	vector<string> open_files;
-	bool restore_sessions = true;
 	bool do_scan = true;
 	bool show_version = false;
 
@@ -205,7 +204,6 @@ int main(int argc, char *argv[])
 			{"input-file", required_argument, nullptr, 'i'},
 			{"settings", required_argument, nullptr, 's'},
 			{"input-format", required_argument, nullptr, 'I'},
-			{"clean", no_argument, nullptr, 'c'},
 			{"log-to-stdout", no_argument, nullptr, 's'},
 			{nullptr, 0, nullptr, 0}
 		};
@@ -264,10 +262,6 @@ int main(int argc, char *argv[])
 
 		case 'I':
 			open_file_format = optarg;
-			break;
-
-		case 'c':
-			restore_sessions = false;
 			break;
 		}
 	}
@@ -339,9 +333,6 @@ int main(int argc, char *argv[])
 			// Initialise the main window
 			pv::MainWindow w(device_manager);
 			w.show();
-
-			if (restore_sessions)
-				w.restore_sessions();
 
 			if (open_files.empty())
 				w.add_default_session();

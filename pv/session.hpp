@@ -147,8 +147,6 @@ public:
 	const vector< shared_ptr<views::ViewBase> > views() const;
 
 	shared_ptr<views::ViewBase> main_view() const;
-	shared_ptr<pv::toolbars::MainBar> main_bar() const;
-	void set_main_bar(shared_ptr<pv::toolbars::MainBar> main_bar);
 
 	/**
 	 * Indicates whether the captured data was saved to disk already or not
@@ -281,8 +279,6 @@ private:
 
 	vector< shared_ptr<views::ViewBase> > views_;
 	shared_ptr<pv::views::ViewBase> main_view_;
-
-	shared_ptr<pv::toolbars::MainBar> main_bar_;
 
 	mutable mutex sampling_mutex_; //!< Protects access to capture_state_
 	capture_state capture_state_;
