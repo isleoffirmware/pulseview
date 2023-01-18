@@ -44,7 +44,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 option(DISABLE_WERROR "Build without -Werror" TRUE)
 option(ENABLE_SIGNALS "Build with UNIX signals" TRUE)
 option(ENABLE_STACKTRACE "Enable stack trace when crashing" FALSE)
-option(ENABLE_DECODE "Build with libsigrokdecode" TRUE)
+# TODO: deal with this later
+option(ENABLE_DECODE "Build with libsigrokdecode" FALSE)
 option(ENABLE_FLOW "Build with libsigrokflow" FALSE)
 option(ENABLE_TESTS "Enable unit tests" FALSE)
 option(STATIC_PKGDEPS_LIBS "Statically link to (pkg-config) libraries" FALSE)
@@ -290,20 +291,12 @@ set(pulseview_SOURCES
 	pv/devices/hardwaredevice.cpp
 	pv/devices/inputfile.cpp
 	pv/devices/sessionfile.cpp
-	pv/dialogs/connect.cpp
-	pv/dialogs/inputoutputoptions.cpp
-	pv/dialogs/settings.cpp
-	pv/dialogs/storeprogress.cpp
-	pv/popups/deviceoptions.cpp
-	pv/popups/channels.cpp
 	pv/prop/bool.cpp
 	pv/prop/double.cpp
 	pv/prop/enum.cpp
 	pv/prop/int.cpp
 	pv/prop/property.cpp
 	pv/prop/string.cpp
-	pv/subwindows/subwindowbase.cpp
-	pv/toolbars/mainbar.cpp
 	pv/views/trace/analogsignal.cpp
 	pv/views/trace/cursor.cpp
 	pv/views/trace/cursorpair.cpp
@@ -359,20 +352,12 @@ set(pulseview_HEADERS
 	pv/data/logicsegment.hpp
 	pv/data/mathsignal.hpp
 	pv/data/signalbase.hpp
-	pv/dialogs/connect.hpp
-	pv/dialogs/inputoutputoptions.hpp
-	pv/dialogs/settings.hpp
-	pv/dialogs/storeprogress.hpp
-	pv/popups/channels.hpp
-	pv/popups/deviceoptions.hpp
 	pv/prop/bool.hpp
 	pv/prop/double.hpp
 	pv/prop/enum.hpp
 	pv/prop/int.hpp
 	pv/prop/property.hpp
 	pv/prop/string.hpp
-	pv/subwindows/subwindowbase.hpp
-	pv/toolbars/mainbar.hpp
 	pv/views/trace/analogsignal.hpp
 	pv/views/trace/cursor.hpp
 	pv/views/trace/flag.hpp
@@ -424,9 +409,6 @@ if(ENABLE_DECODE)
 		pv/data/decode/decoder.cpp
 		pv/data/decode/row.cpp
 		pv/data/decode/rowdata.cpp
-		pv/subwindows/decoder_selector/item.cpp
-		pv/subwindows/decoder_selector/model.cpp
-		pv/subwindows/decoder_selector/subwindow.cpp
 		pv/views/decoder_binary/view.cpp
 		pv/views/decoder_binary/QHexView.cpp
 		pv/views/tabular_decoder/model.cpp
@@ -438,7 +420,6 @@ if(ENABLE_DECODE)
 
 	list(APPEND pulseview_HEADERS
 		pv/data/decodesignal.hpp
-		pv/subwindows/decoder_selector/subwindow.hpp
 		pv/views/decoder_binary/view.hpp
 		pv/views/decoder_binary/QHexView.hpp
 		pv/views/tabular_decoder/view.hpp
