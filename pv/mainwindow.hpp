@@ -95,7 +95,6 @@ public:
 
 private:
 	void setup_ui();
-	void update_acq_button(Session *session);
 
 	shared_ptr<Session> get_tab_session(int index) const;
 
@@ -111,20 +110,11 @@ public Q_SLOTS:
 private Q_SLOTS:
 	void on_add_view(ViewType type, Session *session);
 
-	void on_focus_changed();
-	void on_focused_session_changed(shared_ptr<Session> session);
-
-	void on_new_session_clicked();
-
 	void on_session_name_changed();
 	void on_session_device_changed();
 	void on_session_capture_state_changed(int state);
 
 	void on_new_view(Session *session, int view_type);
-	void on_view_close_clicked();
-
-	void on_tab_changed(int index);
-	void on_tab_close_requested(int index);
 
 	void on_show_decoder_selector(Session *session);
 
@@ -132,8 +122,6 @@ private Q_SLOTS:
 	void on_view_sticky_scrolling_shortcut();
 	void on_view_show_sampling_points_shortcut();
 	void on_view_show_analog_minor_grid_shortcut();
-
-	void on_close_current_tab();
 
 private:
 	DeviceManager &device_manager_;
@@ -145,8 +133,6 @@ private:
 
 	map< shared_ptr<Session>, QMainWindow*> session_windows_;
 
-	QWidget *static_tab_widget_;
-	QToolButton *new_session_button_, *run_stop_button_, *settings_button_;
 	QTabWidget session_selector_;
 
 	QIcon icon_red_;

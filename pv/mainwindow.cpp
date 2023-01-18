@@ -173,9 +173,6 @@ shared_ptr<views::ViewBase> MainWindow::add_view(views::ViewType type,
 		dock->findChildren<QAbstractButton*>("qt_dockwidget_closebutton")  // clazy:exclude=detaching-temporary
 			.front();
 
-	connect(close_btn, SIGNAL(clicked(bool)),
-		this, SLOT(on_view_close_clicked()));
-
 	connect(&session, SIGNAL(trigger_event(int, util::Timestamp)),
 		qobject_cast<views::ViewBase*>(v.get()),
 		SLOT(trigger_event(int, util::Timestamp)));
@@ -248,9 +245,6 @@ shared_ptr<Session> MainWindow::add_session()
 
 void MainWindow::remove_session(shared_ptr<Session> session)
 {
-	// Determine the height of the button before it collapses
-	int h = new_session_button_->height();
-
 	// Stop capture while the session still exists so that the UI can be
 	// updated in case we're currently running. If so, this will schedule a
 	// call to our on_capture_state_changed() slot for the next run of the
@@ -276,16 +270,6 @@ void MainWindow::remove_session(shared_ptr<Session> session)
 		return s == session; });
 
 	if (sessions_.empty()) {
-		// When there are no more tabs, the height of the QTabWidget
-		// drops to zero. We must prevent this to keep the static
-		// widgets visible
-		for (QWidget *w : static_tab_widget_->findChildren<QWidget*>())  // clazy:exclude=range-loop
-			w->setMinimumHeight(h);
-
-		int margin = static_tab_widget_->layout()->contentsMargins().bottom();
-		static_tab_widget_->setMinimumHeight(h + 2 * margin);
-		session_selector_.setMinimumHeight(h + 2 * margin);
-
 		// Update the window title if there is no view left to
 		// generate focus change events
 		setWindowTitle(WindowTitle);
@@ -333,8 +317,6 @@ void MainWindow::setup_ui()
 {
 	setObjectName(QString::fromUtf8("MainWindow"));
 
-	setCentralWidget(&session_selector_);
-
 	// Set the window icon
 	QIcon icon;
 	icon.addFile(QString(":/icons/pulseview.png"));
@@ -353,84 +335,10 @@ void MainWindow::setup_ui()
 	view_colored_bg_shortcut_ = new QShortcut(QKeySequence(Qt::Key_B), this, SLOT(on_view_colored_bg_shortcut()));
 	view_colored_bg_shortcut_->setAutoRepeat(false);
 
-	// Set up the tab area
-	new_session_button_ = new QToolButton();
-	new_session_button_->setIcon(QIcon::fromTheme("document-new",
-		QIcon(":/icons/document-new.png")));
-	new_session_button_->setToolTip(tr("Create New Session"));
-	new_session_button_->setAutoRaise(true);
-
-	run_stop_button_ = new QToolButton();
-	run_stop_button_->setAutoRaise(true);
-	run_stop_button_->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	run_stop_button_->setToolTip(tr("Start/Stop Acquisition"));
-
-	run_stop_shortcut_ = new QShortcut(QKeySequence(Qt::Key_Space), run_stop_button_, SLOT(click()));
-	run_stop_shortcut_->setAutoRepeat(false);
-
-	settings_button_ = new QToolButton();
-	settings_button_->setIcon(QIcon::fromTheme("preferences-system",
-		QIcon(":/icons/preferences-system.png")));
-	settings_button_->setToolTip(tr("Settings"));
-	settings_button_->setAutoRaise(true);
-
-	QFrame *separator1 = new QFrame();
-	separator1->setFrameStyle(QFrame::VLine | QFrame::Raised);
-	QFrame *separator2 = new QFrame();
-	separator2->setFrameStyle(QFrame::VLine | QFrame::Raised);
-
 	QHBoxLayout* layout = new QHBoxLayout();
-	layout->setContentsMargins(2, 2, 2, 2);
-	layout->addWidget(new_session_button_);
-	layout->addWidget(separator1);
-	layout->addWidget(run_stop_button_);
-	layout->addWidget(separator2);
-	layout->addWidget(settings_button_);
-
-	static_tab_widget_ = new QWidget();
-	static_tab_widget_->setLayout(layout);
-
-	session_selector_.setCornerWidget(static_tab_widget_, Qt::TopLeftCorner);
-	session_selector_.setTabsClosable(true);
 
 	close_application_shortcut_ = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
 	close_application_shortcut_->setAutoRepeat(false);
-
-	close_current_tab_shortcut_ = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, SLOT(on_close_current_tab()));
-
-	connect(new_session_button_, SIGNAL(clicked(bool)),
-		this, SLOT(on_new_session_clicked()));
-	connect(run_stop_button_, SIGNAL(clicked(bool)),
-		this, SLOT(on_run_stop_clicked()));
-
-	connect(&session_selector_, SIGNAL(tabCloseRequested(int)),
-		this, SLOT(on_tab_close_requested(int)));
-	connect(&session_selector_, SIGNAL(currentChanged(int)),
-		this, SLOT(on_tab_changed(int)));
-
-
-	connect(static_cast<QApplication *>(QCoreApplication::instance()),
-		SIGNAL(focusChanged(QWidget*, QWidget*)),
-		this, SLOT(on_focus_changed()));
-}
-
-void MainWindow::update_acq_button(Session *session)
-{
-	int state;
-	QString run_caption;
-
-	if (session) {
-		state = session->get_capture_state();
-		run_caption = session->using_file_device() ? tr("Reload") : tr("Run");
-	} else {
-		state = Session::Stopped;
-		run_caption = tr("Run");
-	}
-
-	const QIcon *icons[] = {&icon_grey_, &icon_red_, &icon_green_};
-	run_stop_button_->setIcon(*icons[state]);
-	run_stop_button_->setText((state == pv::Session::Stopped) ?
-		run_caption : tr("Stop"));
 }
 
 shared_ptr<Session> MainWindow::get_tab_session(int index) const
@@ -534,48 +442,6 @@ void MainWindow::on_add_view(views::ViewType type, Session *session)
 			add_view(type, *s);
 }
 
-void MainWindow::on_focus_changed()
-{
-	shared_ptr<views::ViewBase> view = get_active_view();
-
-	if (view) {
-		for (shared_ptr<Session> session : sessions_) {
-			if (session->has_view(view)) {
-				if (session != last_focused_session_) {
-					// Activate correct tab if necessary
-					shared_ptr<Session> tab_session = get_tab_session(
-						session_selector_.currentIndex());
-					if (tab_session != session)
-						session_selector_.setCurrentWidget(
-							session_windows_.at(session));
-
-					on_focused_session_changed(session);
-				}
-
-				break;
-			}
-		}
-	}
-
-	if (sessions_.empty())
-		setWindowTitle(WindowTitle);
-}
-
-void MainWindow::on_focused_session_changed(shared_ptr<Session> session)
-{
-	last_focused_session_ = session;
-
-	setWindowTitle(session->name() + " - " + WindowTitle);
-
-	// Update the state of the run/stop button, too
-	update_acq_button(session.get());
-}
-
-void MainWindow::on_new_session_clicked()
-{
-	add_session();
-}
-
 void MainWindow::on_session_name_changed()
 {
 	// Update the corresponding dock widget's name(s)
@@ -613,8 +479,6 @@ void MainWindow::on_session_device_changed()
 	// unless there is only one session
 	if ((sessions_.size() > 1) && (session != last_focused_session_.get()))
 		return;
-
-	update_acq_button(session);
 }
 
 void MainWindow::on_session_capture_state_changed(int state)
@@ -628,8 +492,6 @@ void MainWindow::on_session_capture_state_changed(int state)
 	// unless there is only one session
 	if ((sessions_.size() > 1) && (session != last_focused_session_.get()))
 		return;
-
-	update_acq_button(session);
 }
 
 void MainWindow::on_new_view(Session *session, int view_type)
@@ -638,69 +500,6 @@ void MainWindow::on_new_view(Session *session, int view_type)
 	for (shared_ptr<Session>& s : sessions_)
 		if (s.get() == session)
 			add_view((views::ViewType)view_type, *s);
-}
-
-void MainWindow::on_view_close_clicked()
-{
-	// Find the dock widget that contains the close button that was clicked
-	QObject *w = QObject::sender();
-	QDockWidget *dock = nullptr;
-
-	while (w) {
-	    dock = qobject_cast<QDockWidget*>(w);
-	    if (dock)
-	        break;
-	    w = w->parent();
-	}
-
-	// Get the view contained in the dock widget
-	shared_ptr<views::ViewBase> view;
-
-	for (auto& entry : view_docks_)
-		if (entry.first == dock)
-			view = entry.second;
-
-	// Deregister the view
-	for (shared_ptr<Session> session : sessions_) {
-		if (!session->has_view(view))
-			continue;
-
-		// Also destroy the entire session if its main view is closing...
-		if (view == session->main_view()) {
-			// ...but only if data is saved or the user confirms closing
-			if (session->data_saved() || (QMessageBox::question(this, tr("Confirmation"),
-				tr("This session contains unsaved data. Close it anyway?"),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes))
-				remove_session(session);
-			break;
-		} else
-			// All other views can be closed at any time as no data will be lost
-			remove_view(view);
-	}
-}
-
-void MainWindow::on_tab_changed(int index)
-{
-	shared_ptr<Session> session = get_tab_session(index);
-
-	if (session)
-		on_focused_session_changed(session);
-}
-
-void MainWindow::on_tab_close_requested(int index)
-{
-	shared_ptr<Session> session = get_tab_session(index);
-
-	if (!session)
-		return;
-
-	if (session->data_saved() || (QMessageBox::question(this, tr("Confirmation"),
-		tr("This session contains unsaved data. Close it anyway?"),
-		QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes))
-		remove_session(session);
-
-	if (sessions_.empty())
-		update_acq_button(nullptr);
 }
 
 void MainWindow::on_show_decoder_selector(Session *session)
@@ -758,13 +557,6 @@ void MainWindow::on_view_show_analog_minor_grid_shortcut()
 
 	bool state = settings.value(GlobalSettings::Key_View_ShowAnalogMinorGrid).toBool();
 	settings.setValue(GlobalSettings::Key_View_ShowAnalogMinorGrid, !state);
-}
-
-void MainWindow::on_close_current_tab()
-{
-	int tab = session_selector_.currentIndex();
-
-	on_tab_close_requested(tab);
 }
 
 } // namespace pv

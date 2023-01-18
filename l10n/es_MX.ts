@@ -69,57 +69,18 @@ A human-readable form has been saved to disk and was written to the log. You may
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="219"/>
+        <location filename="../pv/mainwindow.cpp" line="216"/>
         <source>Session %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="360"/>
-        <source>Create New Session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="366"/>
-        <source>Start/Stop Acquisition</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="374"/>
-        <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="424"/>
-        <source>Reload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="424"/>
-        <location filename="../pv/mainwindow.cpp" line="427"/>
-        <source>Run</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="433"/>
-        <source>Stop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="454"/>
-        <location filename="../pv/mainwindow.cpp" line="671"/>
-        <location filename="../pv/mainwindow.cpp" line="697"/>
+        <location filename="../pv/mainwindow.cpp" line="362"/>
         <source>Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="455"/>
+        <location filename="../pv/mainwindow.cpp" line="363"/>
         <source>There is unsaved data. Close anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/mainwindow.cpp" line="672"/>
-        <location filename="../pv/mainwindow.cpp" line="698"/>
-        <source>This session contains unsaved data. Close it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
