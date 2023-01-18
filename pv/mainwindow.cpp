@@ -169,10 +169,6 @@ shared_ptr<views::ViewBase> MainWindow::add_view(views::ViewType type,
 	dock->setFeatures(QDockWidget::DockWidgetMovable |
 		QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 
-	QAbstractButton *close_btn =
-		dock->findChildren<QAbstractButton*>("qt_dockwidget_closebutton")  // clazy:exclude=detaching-temporary
-			.front();
-
 	connect(&session, SIGNAL(trigger_event(int, util::Timestamp)),
 		qobject_cast<views::ViewBase*>(v.get()),
 		SLOT(trigger_event(int, util::Timestamp)));
@@ -336,8 +332,6 @@ void MainWindow::setup_ui()
 
 	view_colored_bg_shortcut_ = new QShortcut(QKeySequence(Qt::Key_B), this, SLOT(on_view_colored_bg_shortcut()));
 	view_colored_bg_shortcut_->setAutoRepeat(false);
-
-	QHBoxLayout* layout = new QHBoxLayout();
 
 	close_application_shortcut_ = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
 	close_application_shortcut_->setAutoRepeat(false);
