@@ -74,12 +74,12 @@ A human-readable form has been saved to disk and was written to the log. You may
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="362"/>
+        <location filename="../pv/mainwindow.cpp" line="354"/>
         <source>Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="363"/>
+        <location filename="../pv/mainwindow.cpp" line="355"/>
         <source>There is unsaved data. Close anyway?</source>
         <translation type="unfinished"></translation>
     </message>

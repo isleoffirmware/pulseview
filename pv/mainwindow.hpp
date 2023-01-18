@@ -96,8 +96,6 @@ public:
 private:
 	void setup_ui();
 
-	shared_ptr<Session> get_tab_session(int index) const;
-
 	void closeEvent(QCloseEvent *event);
 
 	virtual QMenu* createPopupMenu();

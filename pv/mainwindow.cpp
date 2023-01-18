@@ -317,6 +317,8 @@ void MainWindow::setup_ui()
 {
 	setObjectName(QString::fromUtf8("MainWindow"));
 
+	setCentralWidget(&session_selector_);
+
 	// Set the window icon
 	QIcon icon;
 	icon.addFile(QString(":/icons/pulseview.png"));
@@ -339,16 +341,6 @@ void MainWindow::setup_ui()
 
 	close_application_shortcut_ = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q), this, SLOT(close()));
 	close_application_shortcut_->setAutoRepeat(false);
-}
-
-shared_ptr<Session> MainWindow::get_tab_session(int index) const
-{
-	// Find the session that belongs to the tab's main window
-	for (auto& entry : session_windows_)
-		if (entry.second == session_selector_.widget(index))
-			return entry.first;
-
-	return nullptr;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
