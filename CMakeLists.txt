@@ -267,7 +267,6 @@ configure_file (
 set(pulseview_SOURCES
 	main.cpp
 	pv/application.cpp
-	pv/devicemanager.cpp
 	pv/globalsettings.cpp
 	pv/logging.cpp
 	pv/mainwindow.cpp
@@ -286,11 +285,7 @@ set(pulseview_SOURCES
 	pv/data/signalbase.cpp
 	pv/data/signaldata.cpp
 	pv/data/segment.cpp
-	pv/devices/device.cpp
-	pv/devices/file.cpp
-	pv/devices/hardwaredevice.cpp
 	pv/devices/inputfile.cpp
-	pv/devices/sessionfile.cpp
 	pv/prop/bool.cpp
 	pv/prop/double.cpp
 	pv/prop/enum.cpp
