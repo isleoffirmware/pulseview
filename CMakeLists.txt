@@ -285,6 +285,8 @@ set(pulseview_SOURCES
 	pv/data/signalbase.cpp
 	pv/data/signaldata.cpp
 	pv/data/segment.cpp
+	pv/devices/device.cpp
+	pv/devices/file.cpp
 	pv/devices/inputfile.cpp
 	pv/prop/bool.cpp
 	pv/prop/double.cpp
@@ -320,7 +322,6 @@ set(pulseview_SOURCES
 	pv/views/trace/standardbar.cpp
 	pv/widgets/colorbutton.cpp
 	pv/widgets/colorpopup.cpp
-	pv/widgets/devicetoolbutton.cpp
 	pv/widgets/exportmenu.cpp
 	pv/widgets/flowlayout.cpp
 	pv/widgets/importmenu.cpp
@@ -376,7 +377,6 @@ set(pulseview_HEADERS
 	pv/views/trace/standardbar.hpp
 	pv/widgets/colorbutton.hpp
 	pv/widgets/colorpopup.hpp
-	pv/widgets/devicetoolbutton.hpp
 	pv/widgets/exportmenu.hpp
 	pv/widgets/flowlayout.hpp
 	pv/widgets/importmenu.hpp

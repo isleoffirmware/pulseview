@@ -26,36 +26,21 @@
         <source>Unknown type supplied when attempting to query %1</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../pv/devicemanager.cpp" line="274"/>
-        <source>Error when scanning device driver &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../pv/devicemanager.cpp" line="65"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/devicemanager.cpp" line="96"/>
-        <source>Scanning for devices that driver %1 can access...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../main.cpp" line="116"/>
+        <location filename="../main.cpp" line="115"/>
         <source>Stack trace of previous crash:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="130"/>
+        <location filename="../main.cpp" line="129"/>
         <source>Don&apos;t show this message again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="133"/>
+        <location filename="../main.cpp" line="132"/>
         <source>When %1 last crashed, it created a stack trace.
 A human-readable form has been saved to disk and was written to the log. You may access it from the settings dialog.</source>
         <translation type="unfinished"></translation>
@@ -64,22 +49,22 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::MainWindow</name>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="66"/>
+        <location filename="../pv/mainwindow.cpp" line="64"/>
         <source>PulseView</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="212"/>
+        <location filename="../pv/mainwindow.cpp" line="209"/>
         <source>Session %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="348"/>
+        <location filename="../pv/mainwindow.cpp" line="320"/>
         <source>Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="349"/>
+        <location filename="../pv/mainwindow.cpp" line="321"/>
         <source>There is unsaved data. Close anyway?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -87,52 +72,42 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::Session</name>
     <message>
-        <location filename="../pv/session.cpp" line="384"/>
-        <source>Can&apos;t restore generated signal of unknown type %1 (%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/session.cpp" line="547"/>
-        <source>Failed to select device</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/session.cpp" line="604"/>
+        <location filename="../pv/session.cpp" line="248"/>
         <source>Failed to open device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="710"/>
+        <location filename="../pv/session.cpp" line="336"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="711"/>
+        <location filename="../pv/session.cpp" line="337"/>
         <source>Unexpected input format: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="746"/>
+        <location filename="../pv/session.cpp" line="367"/>
         <source>Failed to load %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="782"/>
+        <location filename="../pv/session.cpp" line="393"/>
         <source>No active device set, can&apos;t start acquisition.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="795"/>
+        <location filename="../pv/session.cpp" line="406"/>
         <source>No channels enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="1293"/>
+        <location filename="../pv/session.cpp" line="894"/>
         <source>Out of memory, acquisition stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="1500"/>
+        <location filename="../pv/session.cpp" line="1101"/>
         <source>Can&apos;t handle more than 64 logic channels.</source>
         <translation type="unfinished"></translation>
     </message>

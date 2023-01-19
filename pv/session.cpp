@@ -265,7 +265,7 @@ bool Session::using_file_device() const
 	shared_ptr<devices::InputFile> inputfile_device =
 		dynamic_pointer_cast<devices::InputFile>(device_);
 
-	return inputfile_device;
+	return inputfile_device != NULL;
 }
 
 /**
@@ -414,16 +414,6 @@ void Session::start_capture(function<void (const QString)> error_handler)
 
 	trigger_list_.clear();
 	segment_sample_count_.clear();
-
-	// Revert name back to default name (e.g. "Session 1") for real devices
-	// as the (possibly saved) data is gone. File devices keep their name.
-	shared_ptr<devices::HardwareDevice> hw_device =
-		dynamic_pointer_cast< devices::HardwareDevice >(device_);
-
-	if (hw_device) {
-		name_ = default_name_;
-		name_changed();
-	}
 
 	// Begin the session
 	sampling_thread_ = std::thread(&Session::sample_thread_proc, this, error_handler);
