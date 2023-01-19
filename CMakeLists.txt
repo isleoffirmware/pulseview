@@ -437,21 +437,6 @@ endif()
 qt6_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
 #===============================================================================
-#= Translations
-#-------------------------------------------------------------------------------
-
-file(GLOB TS_FILES ${CMAKE_SOURCE_DIR}/l10n/*.ts)
-set_property(SOURCE ${TS_FILES} PROPERTY OUTPUT_LOCATION ${CMAKE_BINARY_DIR}/l10n)
-if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-	configure_file("translations.qrc" "translations.qrc" COPYONLY)
-endif ()
-
-qt6_add_translation(QM_FILES ${TS_FILES})
-qt6_create_translation(QM_FILES ${pulseview_SOURCES} ${TS_FILES})
-
-qt6_add_resources(pulseview_RESOURCES_RCC ${CMAKE_BINARY_DIR}/translations.qrc)
-
-#===============================================================================
 #= Global Definitions
 #-------------------------------------------------------------------------------
 
