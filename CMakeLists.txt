@@ -272,7 +272,6 @@ set(pulseview_SOURCES
 	pv/mainwindow.cpp
 	pv/metadata_obj.cpp
 	pv/session.cpp
-	pv/storesession.cpp
 	pv/util.cpp
 	pv/binding/binding.cpp
 	pv/binding/inputoutput.cpp
@@ -340,7 +339,6 @@ set(pulseview_HEADERS
 	pv/mainwindow.hpp
 	pv/metadata_obj.hpp
 	pv/session.hpp
-	pv/storesession.hpp
 	pv/binding/device.hpp
 	pv/data/analog.hpp
 	pv/data/analogsegment.hpp

@@ -113,36 +113,6 @@ A human-readable form has been saved to disk and was written to the log. You may
     </message>
 </context>
 <context>
-    <name>pv::StoreSession</name>
-    <message>
-        <location filename="../pv/storesession.cpp" line="114"/>
-        <source>Can&apos;t save logic channel without data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/storesession.cpp" line="130"/>
-        <source>Can&apos;t save analog channel without data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/storesession.cpp" line="142"/>
-        <source>No channels enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/storesession.cpp" line="167"/>
-        <source>Can&apos;t save range without sample data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../pv/storesession.cpp" line="188"/>
-        <location filename="../pv/storesession.cpp" line="295"/>
-        <location filename="../pv/storesession.cpp" line="310"/>
-        <source>Error while saving: </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>pv::binding::Device</name>
     <message>
         <location filename="../pv/binding/device.cpp" line="82"/>
@@ -421,47 +391,47 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::views::trace::LogicSignal</name>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="423"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="422"/>
         <source>No trigger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="428"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="427"/>
         <source>Trigger on rising edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="433"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="432"/>
         <source>Trigger on high level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="438"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="437"/>
         <source>Trigger on falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="443"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="442"/>
         <source>Trigger on low level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="448"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="447"/>
         <source>Trigger on rising or falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="535"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="534"/>
         <source> pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="539"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="538"/>
         <source>Trace height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="563"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="562"/>
         <source>Trigger</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1106,15 +1076,6 @@ until (condition)
     <message>
         <location filename="../pv/views/trace/view.cpp" line="1606"/>
         <source>Create marker here</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>pv::widgets::DeviceToolButton</name>
-    <message>
-        <location filename="../pv/widgets/devicetoolbutton.cpp" line="75"/>
-        <location filename="../pv/widgets/devicetoolbutton.cpp" line="82"/>
-        <source>&lt;No Device&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

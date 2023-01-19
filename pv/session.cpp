@@ -325,7 +325,7 @@ void Session::load_init_file(const string &file_name,
 
 	if (!format.empty()) {
 		const map<string, shared_ptr<InputFormat> > formats =
-			device_manager_.context()->input_formats();
+			sr_context->input_formats();
 		auto user_opts = pv::util::split_string(format, ":");
 		string user_name = user_opts.front();
 		user_opts.erase(user_opts.begin());
@@ -355,12 +355,12 @@ void Session::load_file(QString file_name, QString setup_file_name,
 	// In the absence of a caller's format spec, try to auto detect.
 	// Assume "sigrok session file" upon lookup miss.
 	if (!format)
-		format = device_manager_.context()->input_format_match(file_name.toStdString());
+		format = sr_context->input_format_match(file_name.toStdString());
 	try {
 		if (format)
 			set_device(shared_ptr<devices::Device>(
 				new devices::InputFile(
-					device_manager_.context(),
+					sr_context,
 					file_name.toStdString(),
 					format, options)));
 	} catch (Error& e) {
