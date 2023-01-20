@@ -92,7 +92,6 @@ using sigrok::InputFormat;
 using sigrok::Logic;
 using sigrok::Meta;
 using sigrok::Packet;
-using sigrok::Session;
 
 using Glib::VariantBase;
 
@@ -135,13 +134,6 @@ Session::~Session()
 		group->clear();
 		delete group;
 	}
-}
-
-shared_ptr<sigrok::Session> Session::session() const
-{
-	if (!device_)
-		return shared_ptr<sigrok::Session>();
-	return device_->session();
 }
 
 shared_ptr<devices::Device> Session::device() const
@@ -858,8 +850,9 @@ void Session::sample_thread_proc(function<void (const QString)> error_handler)
 		return;
 	}
 
-	set_capture_state(device_->session()->trigger() ?
-		AwaitingTrigger : Running);
+	// TODO: re-add triggering
+	// set_capture_state(device_->session()->trigger() ? AwaitingTrigger : Running);
+	set_capture_state(Running);
 
 	try {
 		device_->run();

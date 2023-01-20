@@ -109,11 +109,12 @@ LogicSignal::LogicSignal(pv::Session &session, shared_ptr<data::SignalBase> base
 	/* Populate this channel's trigger setting with whatever we
 	 * find in the current session trigger, if anything. */
 	trigger_match_ = nullptr;
-	if (shared_ptr<Trigger> trigger = session_.session()->trigger())
-		for (auto stage : trigger->stages())
-			for (auto match : stage->matches())
-				if (match->channel() == base_->channel())
-					trigger_match_ = match->type();
+	// TODO: fix triggering
+	// if (shared_ptr<Trigger> trigger = session_.session()->trigger())
+	// 	for (auto stage : trigger->stages())
+	// 		for (auto match : stage->matches())
+	// 			if (match->channel() == base_->channel())
+	// 				trigger_match_ = match->type();
 }
 
 std::map<QString, QVariant> LogicSignal::save_settings() const
@@ -565,42 +566,43 @@ void LogicSignal::populate_popup_form(QWidget *parent, QFormLayout *form)
 
 void LogicSignal::modify_trigger()
 {
-	auto trigger = session_.session()->trigger();
-	auto new_trigger = pv::Session::sr_context->create_trigger("pulseview");
+	// TODO: fix triggering
+	// auto trigger = session_.session()->trigger();
+	// auto new_trigger = pv::Session::sr_context->create_trigger("pulseview");
 
-	if (trigger) {
-		for (auto stage : trigger->stages()) {
-			const auto &matches = stage->matches();
-			if (none_of(matches.begin(), matches.end(),
-			    [&](shared_ptr<TriggerMatch> match) {
-					return match->channel() != base_->channel(); }))
-				continue;
+	// if (trigger) {
+	// 	for (auto stage : trigger->stages()) {
+	// 		const auto &matches = stage->matches();
+	// 		if (none_of(matches.begin(), matches.end(),
+	// 		    [&](shared_ptr<TriggerMatch> match) {
+	// 				return match->channel() != base_->channel(); }))
+	// 			continue;
 
-			auto new_stage = new_trigger->add_stage();
-			for (auto match : stage->matches()) {
-				if (match->channel() == base_->channel())
-					continue;
-				new_stage->add_match(match->channel(), match->type());
-			}
-		}
-	}
+	// 		auto new_stage = new_trigger->add_stage();
+	// 		for (auto match : stage->matches()) {
+	// 			if (match->channel() == base_->channel())
+	// 				continue;
+	// 			new_stage->add_match(match->channel(), match->type());
+	// 		}
+	// 	}
+	// }
 
-	if (trigger_match_) {
-		// Until we can let the user decide how to group trigger matches
-		// into stages, put all of the matches into a single stage --
-		// most devices only support a single trigger stage.
-		if (new_trigger->stages().empty())
-			new_trigger->add_stage();
+	// if (trigger_match_) {
+	// 	// Until we can let the user decide how to group trigger matches
+	// 	// into stages, put all of the matches into a single stage --
+	// 	// most devices only support a single trigger stage.
+	// 	if (new_trigger->stages().empty())
+	// 		new_trigger->add_stage();
 
-		new_trigger->stages().back()->add_match(base_->channel(),
-			trigger_match_);
-	}
+	// 	new_trigger->stages().back()->add_match(base_->channel(),
+	// 		trigger_match_);
+	// }
 
-	session_.session()->set_trigger(
-		new_trigger->stages().empty() ? nullptr : new_trigger);
+	// session_.session()->set_trigger(
+	// 	new_trigger->stages().empty() ? nullptr : new_trigger);
 
-	if (owner_)
-		owner_->row_item_appearance_changed(false, true);
+	// if (owner_)
+	// 	owner_->row_item_appearance_changed(false, true);
 }
 
 const QIcon* LogicSignal::get_icon(const char *path)
