@@ -90,10 +90,6 @@ if(ENABLE_DECODE)
 	list(APPEND PKGDEPS libsigrokdecode>=0.5.2)
 endif()
 
-if(ANDROID)
-	list(APPEND PKGDEPS libsigrokandroidutils>=0.1.0)
-endif()
-
 find_package(PkgConfig)
 pkg_check_modules(LIBSRCXX ${LIBSR_CXX_BINDING})
 if(NOT LIBSRCXX_FOUND OR NOT LIBSRCXX_VERSION)
@@ -429,13 +425,6 @@ if(WIN32)
 	list(APPEND pulseview_SOURCES pulseviewico.rc)
 endif()
 
-if(ANDROID)
-	list(APPEND pulseview_SOURCES
-		android/assetreader.cpp
-		android/loghandler.cpp
-	)
-endif()
-
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
 #===============================================================================
@@ -545,16 +534,8 @@ if(ENABLE_STACKTRACE)
 	link_libraries("-no-pie -fno-pie")
 endif()
 
-if(ANDROID)
-	list(APPEND PULSEVIEW_LINK_LIBS "-llog")
-endif()
-
 set(INPUT_FILES_LIST ${pulseview_SOURCES} ${pulseview_RESOURCES_RCC} ${QM_FILES})
-if(ANDROID)
-	add_library(${PROJECT_NAME} SHARED ${INPUT_FILES_LIST})
-else()
-	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
-endif()
+add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
 
 target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS})
 

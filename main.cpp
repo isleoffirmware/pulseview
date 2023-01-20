@@ -61,12 +61,6 @@
 #include "pv/util.hpp"
 #include "pv/data/segment.hpp"
 
-#ifdef ANDROID
-#include <libsigrokandroidutils/libsigrokandroidutils.h>
-#include "android/assetreader.hpp"
-#include "android/loghandler.hpp"
-#endif
-
 #ifdef _WIN32
 #include <QtPlugin>
 #ifdef QT_STATIC
@@ -173,7 +167,6 @@ int main(int argc, char *argv[])
 	shared_ptr<sigrok::Context> context;
 	string open_file_format, open_setup_file, driver;
 	vector<string> open_files;
-	bool do_scan = true;
 	bool show_version = false;
 
 #ifdef ENABLE_FLOW
@@ -186,11 +179,9 @@ int main(int argc, char *argv[])
 
 	Application a(argc, argv);
 
-#ifdef ANDROID
-	srau_init_environment();
-	pv::AndroidLogHandler::install_callbacks();
-	pv::AndroidAssetReader asset_reader;
-#endif
+	// Initialise libsigrok
+	context = sigrok::Context::create();
+	pv::Session::sr_context = context;
 
 	// Parse arguments
 	while (true) {
@@ -199,7 +190,6 @@ int main(int argc, char *argv[])
 			{"version", no_argument, nullptr, 'V'},
 			{"loglevel", required_argument, nullptr, 'l'},
 			{"driver", required_argument, nullptr, 'd'},
-			{"dont-scan", no_argument, nullptr, 'D'},
 			{"input-file", required_argument, nullptr, 'i'},
 			{"settings", required_argument, nullptr, 's'},
 			{"input-format", required_argument, nullptr, 'I'},
@@ -247,10 +237,6 @@ int main(int argc, char *argv[])
 			driver = optarg;
 			break;
 
-		case 'D':
-			do_scan = false;
-			break;
-
 		case 'i':
 			open_files.emplace_back(optarg);
 			break;
@@ -285,10 +271,6 @@ int main(int argc, char *argv[])
 
 	pv::logging.init();
 
-	// Initialise libsigrok
-	context = sigrok::Context::create();
-	pv::Session::sr_context = context;
-
 #if ENABLE_STACKTRACE
 	QString temp_path = QStandardPaths::standardLocations(
 		QStandardPaths::TempLocation).at(0);
@@ -302,9 +284,6 @@ int main(int argc, char *argv[])
 		process_stacktrace(temp_path);
 #endif
 
-#ifdef ANDROID
-	context->set_resource_reader(&asset_reader);
-#endif
 	do {
 
 #ifdef ENABLE_DECODE
