@@ -128,6 +128,8 @@ public:
 
 	~Session();
 
+	shared_ptr<sigrok::Session> session() const;
+
 	shared_ptr<devices::Device> device() const;
 
 	QString name() const;

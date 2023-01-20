@@ -72,42 +72,42 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::Session</name>
     <message>
-        <location filename="../pv/session.cpp" line="241"/>
+        <location filename="../pv/session.cpp" line="248"/>
         <source>Failed to open device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="329"/>
+        <location filename="../pv/session.cpp" line="336"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="330"/>
+        <location filename="../pv/session.cpp" line="337"/>
         <source>Unexpected input format: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="360"/>
+        <location filename="../pv/session.cpp" line="367"/>
         <source>Failed to load %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="386"/>
+        <location filename="../pv/session.cpp" line="393"/>
         <source>No active device set, can&apos;t start acquisition.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="399"/>
+        <location filename="../pv/session.cpp" line="406"/>
         <source>No channels enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="888"/>
+        <location filename="../pv/session.cpp" line="894"/>
         <source>Out of memory, acquisition stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="1095"/>
+        <location filename="../pv/session.cpp" line="1101"/>
         <source>Can&apos;t handle more than 64 logic channels.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -391,47 +391,47 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::views::trace::LogicSignal</name>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="423"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="422"/>
         <source>No trigger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="428"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="427"/>
         <source>Trigger on rising edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="433"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="432"/>
         <source>Trigger on high level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="438"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="437"/>
         <source>Trigger on falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="443"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="442"/>
         <source>Trigger on low level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="448"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="447"/>
         <source>Trigger on rising or falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="535"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="534"/>
         <source> pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="539"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="538"/>
         <source>Trace height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="563"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="562"/>
         <source>Trigger</source>
         <translation type="unfinished"></translation>
     </message>
