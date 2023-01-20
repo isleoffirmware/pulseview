@@ -28,7 +28,6 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include "devicemanager.hpp"
 #include "mainwindow.hpp"
 #include "session.hpp"
 #include "util.hpp"
@@ -41,9 +40,7 @@
 #include "data/mathsignal.hpp"
 #include "data/signalbase.hpp"
 
-#include "devices/hardwaredevice.hpp"
 #include "devices/inputfile.hpp"
-#include "devices/sessionfile.hpp"
 
 #include "views/trace/analogsignal.hpp"
 #include "views/trace/decodetrace.hpp"
@@ -115,9 +112,8 @@ namespace pv {
 
 shared_ptr<sigrok::Context> Session::sr_context;
 
-Session::Session(DeviceManager &device_manager, QString name) :
+Session::Session(QString name) :
 	shutting_down_(false),
-	device_manager_(device_manager),
 	default_name_(name),
 	name_(name),
 	capture_state_(Stopped),
@@ -139,16 +135,6 @@ Session::~Session()
 		group->clear();
 		delete group;
 	}
-}
-
-DeviceManager& Session::device_manager()
-{
-	return device_manager_;
-}
-
-const DeviceManager& Session::device_manager() const
-{
-	return device_manager_;
 }
 
 shared_ptr<sigrok::Session> Session::session() const
@@ -204,348 +190,6 @@ shared_ptr<views::ViewBase> Session::main_view() const
 bool Session::data_saved() const
 {
 	return data_saved_;
-}
-
-void Session::save_setup(QSettings &settings) const
-{
-	int i;
-	int decode_signal_count = 0;
-	int gen_signal_count = 0;
-
-	// Save channels and decoders
-	for (const shared_ptr<data::SignalBase>& base : signalbases_) {
-#ifdef ENABLE_DECODE
-		if (base->is_decode_signal()) {
-			settings.beginGroup("decode_signal" + QString::number(decode_signal_count++));
-			base->save_settings(settings);
-			settings.endGroup();
-		} else
-#endif
-		if (base->is_generated()) {
-			settings.beginGroup("generated_signal" + QString::number(gen_signal_count++));
-			settings.setValue("type", base->type());
-			base->save_settings(settings);
-			settings.endGroup();
-		} else {
-			settings.beginGroup(base->internal_name());
-			base->save_settings(settings);
-			settings.endGroup();
-		}
-	}
-
-	settings.setValue("decode_signals", decode_signal_count);
-	settings.setValue("generated_signals", gen_signal_count);
-
-	// Save view states and their signal settings
-	// Note: main_view must be saved as view0
-	i = 0;
-	settings.beginGroup("view" + QString::number(i++));
-	main_view_->save_settings(settings);
-	settings.endGroup();
-
-	for (const shared_ptr<views::ViewBase>& view : views_) {
-		if (view != main_view_) {
-			settings.beginGroup("view" + QString::number(i++));
-			settings.setValue("type", view->get_type());
-			view->save_settings(settings);
-			settings.endGroup();
-		}
-	}
-
-	settings.setValue("views", i);
-
-	int view_id = 0;
-	i = 0;
-	for (const shared_ptr<views::ViewBase>& vb : views_) {
-		shared_ptr<views::trace::View> tv = dynamic_pointer_cast<views::trace::View>(vb);
-		if (tv) {
-			for (const shared_ptr<views::trace::TimeItem>& time_item : tv->time_items()) {
-
-				const shared_ptr<views::trace::Flag> flag =
-					dynamic_pointer_cast<views::trace::Flag>(time_item);
-				if (flag) {
-					if (!flag->enabled())
-						continue;
-
-					settings.beginGroup("meta_obj" + QString::number(i++));
-					settings.setValue("type", "time_marker");
-					settings.setValue("assoc_view", view_id);
-					GlobalSettings::store_timestamp(settings, "time", flag->time());
-					settings.setValue("text", flag->get_text());
-					settings.endGroup();
-				}
-			}
-
-			if (tv->cursors_shown()) {
-				settings.beginGroup("meta_obj" + QString::number(i++));
-				settings.setValue("type", "selection");
-				settings.setValue("assoc_view", view_id);
-				const shared_ptr<views::trace::CursorPair> cp = tv->cursors();
-				GlobalSettings::store_timestamp(settings, "start_time", cp->first()->time());
-				GlobalSettings::store_timestamp(settings, "end_time", cp->second()->time());
-				settings.endGroup();
-			}
-		}
-
-		view_id++;
-	}
-
-	settings.setValue("meta_objs", i);
-}
-
-void Session::save_settings(QSettings &settings) const
-{
-	map<string, string> dev_info;
-	list<string> key_list;
-
-	if (device_) {
-		shared_ptr<devices::HardwareDevice> hw_device =
-			dynamic_pointer_cast< devices::HardwareDevice >(device_);
-
-		if (hw_device) {
-			settings.setValue("device_type", "hardware");
-			settings.beginGroup("device");
-
-			key_list.emplace_back("vendor");
-			key_list.emplace_back("model");
-			key_list.emplace_back("version");
-			key_list.emplace_back("serial_num");
-			key_list.emplace_back("connection_id");
-
-			dev_info = device_manager_.get_device_info(device_);
-
-			for (string& key : key_list) {
-				if (dev_info.count(key))
-					settings.setValue(QString::fromUtf8(key.c_str()),
-							QString::fromUtf8(dev_info.at(key).c_str()));
-				else
-					settings.remove(QString::fromUtf8(key.c_str()));
-			}
-
-			settings.endGroup();
-		}
-
-		// Having saved the data to srzip overrides the current device. This is
-		// a crappy hack around the fact that saving e.g. an imported file to
-		// srzip would require changing the underlying libsigrok device
-		if (!save_path_.isEmpty()) {
-			QFileInfo fi = QFileInfo(QDir(save_path_), name_);
-			settings.setValue("device_type", "sessionfile");
-			settings.beginGroup("device");
-			settings.setValue("filename", fi.absoluteFilePath());
-			settings.endGroup();
-		} else {
-			shared_ptr<devices::SessionFile> sessionfile_device =
-				dynamic_pointer_cast<devices::SessionFile>(device_);
-
-			if (sessionfile_device) {
-				settings.setValue("device_type", "sessionfile");
-				settings.beginGroup("device");
-				settings.setValue("filename", QString::fromStdString(
-					sessionfile_device->full_name()));
-				settings.endGroup();
-			}
-
-			shared_ptr<devices::InputFile> inputfile_device =
-				dynamic_pointer_cast<devices::InputFile>(device_);
-
-			if (inputfile_device) {
-				settings.setValue("device_type", "inputfile");
-				settings.beginGroup("device");
-				inputfile_device->save_meta_to_settings(settings);
-				settings.endGroup();
-			}
-		}
-
-		save_setup(settings);
-	}
-}
-
-void Session::restore_setup(QSettings &settings)
-{
-	// Restore channels
-	for (shared_ptr<data::SignalBase> base : signalbases_) {
-		settings.beginGroup(base->internal_name());
-		base->restore_settings(settings);
-		settings.endGroup();
-	}
-
-	// Restore generated signals
-	int gen_signal_count = settings.value("generated_signals").toInt();
-
-	for (int i = 0; i < gen_signal_count; i++) {
-		settings.beginGroup("generated_signal" + QString::number(i));
-		SignalBase::ChannelType type = (SignalBase::ChannelType)settings.value("type").toInt();
-		shared_ptr<data::SignalBase> signal;
-
-		if (type == SignalBase::MathChannel)
-			signal = make_shared<data::MathSignal>(*this);
-		else
-			qWarning() << tr("Can't restore generated signal of unknown type %1 (%2)") \
-				.arg((int)type) \
-				.arg(settings.value("name").toString());
-
-		if (signal) {
-			add_generated_signal(signal);
-			signal->restore_settings(settings);
-		}
-
-		settings.endGroup();
-	}
-
-	// Restore decoders
-#ifdef ENABLE_DECODE
-	int decode_signal_count = settings.value("decode_signals").toInt();
-
-	for (int i = 0; i < decode_signal_count; i++) {
-		settings.beginGroup("decode_signal" + QString::number(i));
-		shared_ptr<data::DecodeSignal> signal = add_decode_signal();
-		signal->restore_settings(settings);
-		settings.endGroup();
-	}
-#endif
-
-	// Restore views
-	int views = settings.value("views").toInt();
-
-	for (int i = 0; i < views; i++) {
-		settings.beginGroup("view" + QString::number(i));
-
-		if (i > 0) {
-			views::ViewType type = (views::ViewType)settings.value("type").toInt();
-			add_view(type, this);
-			views_.back()->restore_settings(settings);
-		} else
-			main_view_->restore_settings(settings);
-
-		settings.endGroup();
-	}
-
-	// Restore meta objects like markers and cursors
-	int meta_objs = settings.value("meta_objs").toInt();
-
-	for (int i = 0; i < meta_objs; i++) {
-		settings.beginGroup("meta_obj" + QString::number(i));
-
-		shared_ptr<views::ViewBase> vb;
-		shared_ptr<views::trace::View> tv;
-		if (settings.contains("assoc_view"))
-			vb = views_.at(settings.value("assoc_view").toInt());
-
-		if (vb)
-			tv = dynamic_pointer_cast<views::trace::View>(vb);
-
-		const QString type = settings.value("type").toString();
-
-		if ((type == "time_marker") && tv) {
-			Timestamp ts = GlobalSettings::restore_timestamp(settings, "time");
-			shared_ptr<views::trace::Flag> flag = tv->add_flag(ts);
-			flag->set_text(settings.value("text").toString());
-		}
-
-		if ((type == "selection") && tv) {
-			Timestamp start = GlobalSettings::restore_timestamp(settings, "start_time");
-			Timestamp end = GlobalSettings::restore_timestamp(settings, "end_time");
-			tv->set_cursors(start, end);
-			tv->show_cursors();
-		}
-
-		settings.endGroup();
-	}
-}
-
-void Session::restore_settings(QSettings &settings)
-{
-	shared_ptr<devices::Device> device;
-
-	const QString device_type = settings.value("device_type").toString();
-
-	if (device_type == "hardware") {
-		map<string, string> dev_info;
-		list<string> key_list;
-
-		// Re-select last used device if possible but only if it's not demo
-		settings.beginGroup("device");
-		key_list.emplace_back("vendor");
-		key_list.emplace_back("model");
-		key_list.emplace_back("version");
-		key_list.emplace_back("serial_num");
-		key_list.emplace_back("connection_id");
-
-		for (string key : key_list) {
-			const QString k = QString::fromStdString(key);
-			if (!settings.contains(k))
-				continue;
-
-			const string value = settings.value(k).toString().toStdString();
-			if (!value.empty())
-				dev_info.insert(make_pair(key, value));
-		}
-
-		if (dev_info.count("model") > 0)
-			device = device_manager_.find_device_from_info(dev_info);
-
-		if (device)
-			set_device(device);
-
-		settings.endGroup();
-
-		if (device)
-			restore_setup(settings);
-	}
-
-	QString filename;
-	if ((device_type == "sessionfile") || (device_type == "inputfile")) {
-		if (device_type == "sessionfile") {
-			settings.beginGroup("device");
-			filename = settings.value("filename").toString();
-			settings.endGroup();
-
-			if (QFileInfo(filename).isReadable())
-				device = make_shared<devices::SessionFile>(device_manager_.context(),
-					filename.toStdString());
-		}
-
-		if (device_type == "inputfile") {
-			settings.beginGroup("device");
-			device = make_shared<devices::InputFile>(device_manager_.context(),
-				settings);
-			settings.endGroup();
-		}
-
-
-		if (device) {
-			set_device(device);
-			restore_setup(settings);
-
-			start_capture([](QString infoMessage) {
-				// TODO Emulate noquote()
-				qDebug() << "Session error:" << infoMessage; });
-
-			set_name(QString::fromStdString(
-				dynamic_pointer_cast<devices::File>(device)->display_name(device_manager_)));
-
-			if (!filename.isEmpty()) {
-				// Only set the save path if we load an srzip file
-				if (device_type == "sessionfile")
-					set_save_path(QFileInfo(filename).absolutePath());
-
-				set_name(QFileInfo(filename).fileName());
-			}
-		}
-	}
-}
-
-void Session::select_device(shared_ptr<devices::Device> device)
-{
-	try {
-		if (device)
-			set_device(device);
-		else
-			set_default_device();
-	} catch (const QString &e) {
-		MainWindow::show_session_error(tr("Failed to select device"), e);
-	}
 }
 
 void Session::set_device(shared_ptr<devices::Device> device)
@@ -616,30 +260,12 @@ void Session::set_device(shared_ptr<devices::Device> device)
 	device_changed();
 }
 
-void Session::set_default_device()
-{
-	const list< shared_ptr<devices::HardwareDevice> > &devices =
-		device_manager_.devices();
-
-	if (devices.empty())
-		return;
-
-	// Try and find the demo device and select that by default
-	const auto iter = find_if(devices.begin(), devices.end(),
-		[] (const shared_ptr<devices::HardwareDevice> &d) {
-			return d->hardware_device()->driver()->name() == "demo"; });
-	set_device((iter == devices.end()) ? devices.front() : *iter);
-}
-
 bool Session::using_file_device() const
 {
-	shared_ptr<devices::SessionFile> sessionfile_device =
-		dynamic_pointer_cast<devices::SessionFile>(device_);
-
 	shared_ptr<devices::InputFile> inputfile_device =
 		dynamic_pointer_cast<devices::InputFile>(device_);
 
-	return (sessionfile_device || inputfile_device);
+	return inputfile_device != NULL;
 }
 
 /**
@@ -699,7 +325,7 @@ void Session::load_init_file(const string &file_name,
 
 	if (!format.empty()) {
 		const map<string, shared_ptr<InputFormat> > formats =
-			device_manager_.context()->input_formats();
+			sr_context->input_formats();
 		auto user_opts = pv::util::split_string(format, ":");
 		string user_name = user_opts.front();
 		user_opts.erase(user_opts.begin());
@@ -729,22 +355,16 @@ void Session::load_file(QString file_name, QString setup_file_name,
 	// In the absence of a caller's format spec, try to auto detect.
 	// Assume "sigrok session file" upon lookup miss.
 	if (!format)
-		format = device_manager_.context()->input_format_match(file_name.toStdString());
+		format = sr_context->input_format_match(file_name.toStdString());
 	try {
 		if (format)
 			set_device(shared_ptr<devices::Device>(
 				new devices::InputFile(
-					device_manager_.context(),
+					sr_context,
 					file_name.toStdString(),
 					format, options)));
-		else
-			set_device(shared_ptr<devices::Device>(
-				new devices::SessionFile(
-					device_manager_.context(),
-					file_name.toStdString())));
 	} catch (Error& e) {
 		MainWindow::show_session_error(tr("Failed to load %1").arg(file_name), e.what());
-		set_default_device();
 		return;
 	}
 
@@ -755,17 +375,8 @@ void Session::load_file(QString file_name, QString setup_file_name,
 		setup_file_name.append(".pvs");
 	}
 
-	if (QFileInfo::exists(setup_file_name) && QFileInfo(setup_file_name).isReadable()) {
-		QSettings settings_storage(setup_file_name, QSettings::IniFormat);
-		restore_setup(settings_storage);
-	}
-
 	start_capture([&, errorMessage](QString infoMessage) {
 		MainWindow::show_session_error(errorMessage, infoMessage); });
-
-	// Only set save path if we loaded an srzip file
-	if (dynamic_pointer_cast<devices::SessionFile>(device_))
-		set_save_path(QFileInfo(file_name).absolutePath());
 
 	set_name(QFileInfo(file_name).fileName());
 }
@@ -803,16 +414,6 @@ void Session::start_capture(function<void (const QString)> error_handler)
 
 	trigger_list_.clear();
 	segment_sample_count_.clear();
-
-	// Revert name back to default name (e.g. "Session 1") for real devices
-	// as the (possibly saved) data is gone. File devices keep their name.
-	shared_ptr<devices::HardwareDevice> hw_device =
-		dynamic_pointer_cast< devices::HardwareDevice >(device_);
-
-	if (hw_device) {
-		name_ = default_name_;
-		name_changed();
-	}
 
 	// Begin the session
 	sampling_thread_ = std::thread(&Session::sample_thread_proc, this, error_handler);

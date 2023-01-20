@@ -43,7 +43,7 @@ public:
 	/**
 	 * Builds the display name. It only contains fields as required.
 	 */
-	string display_name(const DeviceManager&) const;
+	string display_name() const;
 
 protected:
 	string file_name_;

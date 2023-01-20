@@ -41,8 +41,6 @@
 #include "mainwindow.hpp"
 
 #include "application.hpp"
-#include "devicemanager.hpp"
-#include "devices/hardwaredevice.hpp"
 #include "globalsettings.hpp"
 #include "util.hpp"
 #include "views/trace/view.hpp"
@@ -65,9 +63,8 @@ namespace pv {
 
 const QString MainWindow::WindowTitle = tr("PulseView");
 
-MainWindow::MainWindow(DeviceManager &device_manager, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	device_manager_(device_manager),
 	session_selector_(this),
 	icon_red_(":/icons/status-red.svg"),
 	icon_green_(":/icons/status-green.svg"),
@@ -211,7 +208,7 @@ shared_ptr<Session> MainWindow::add_session()
 	static int last_session_id = 1;
 	QString name = tr("Session %1").arg(last_session_id++);
 
-	shared_ptr<Session> session = make_shared<Session>(device_manager_, name);
+	shared_ptr<Session> session = make_shared<Session>(name);
 
 	connect(session.get(), SIGNAL(add_view(ViewType, Session*)),
 		this, SLOT(on_add_view(ViewType, Session*)));
@@ -281,32 +278,7 @@ void MainWindow::add_session_with_file(string open_file_name,
 
 void MainWindow::add_default_session()
 {
-	// Only add the default session if there would be no session otherwise
-	if (sessions_.size() > 0)
-		return;
-
-	shared_ptr<Session> session = add_session();
-
-	// Check the list of available devices. Prefer the one that was
-	// found with user supplied scan specs (if applicable). Then try
-	// one of the auto detected devices that are not the demo device.
-	// Pick demo in the absence of "genuine" hardware devices.
-	shared_ptr<devices::HardwareDevice> user_device, other_device, demo_device;
-	for (const shared_ptr<devices::HardwareDevice>& dev : device_manager_.devices()) {
-		if (dev == device_manager_.user_spec_device()) {
-			user_device = dev;
-		} else if (dev->hardware_device()->driver()->name() == "demo") {
-			demo_device = dev;
-		} else {
-			other_device = dev;
-		}
-	}
-	if (user_device)
-		session->select_device(user_device);
-	else if (other_device)
-		session->select_device(other_device);
-	else
-		session->select_device(demo_device);
+	// TODO: remove
 }
 
 void MainWindow::setup_ui()
@@ -372,52 +344,7 @@ bool MainWindow::restoreState(const QByteArray &state, int version)
 
 void MainWindow::on_run_stop_clicked()
 {
-	GlobalSettings settings;
-	bool all_sessions = settings.value(GlobalSettings::Key_General_StartAllSessions).toBool();
-
-	if (all_sessions)
-	{
-		vector< shared_ptr<Session> > hw_sessions;
-
-		// Make a list of all sessions where a hardware device is used
-		for (const shared_ptr<Session>& s : sessions_) {
-			shared_ptr<devices::HardwareDevice> hw_device =
-					dynamic_pointer_cast< devices::HardwareDevice >(s->device());
-			if (!hw_device)
-				continue;
-			hw_sessions.push_back(s);
-		}
-
-		// Stop all acquisitions if there are any running ones, start all otherwise
-		bool any_running = any_of(hw_sessions.begin(), hw_sessions.end(),
-				[](const shared_ptr<Session> &s)
-				{ return (s->get_capture_state() == Session::AwaitingTrigger) ||
-						(s->get_capture_state() == Session::Running); });
-
-		for (shared_ptr<Session> s : hw_sessions)
-			if (any_running)
-				s->stop_capture();
-			else
-				s->start_capture([&](QString message) {
-					show_session_error("Capture failed", message); });
-	} else {
-
-		shared_ptr<Session> session = last_focused_session_;
-
-		if (!session)
-			return;
-
-		switch (session->get_capture_state()) {
-		case Session::Stopped:
-			session->start_capture([&](QString message) {
-				show_session_error("Capture failed", message); });
-			break;
-		case Session::AwaitingTrigger:
-		case Session::Running:
-			session->stop_capture();
-			break;
-		}
-	}
+	// TODO: remove
 }
 
 void MainWindow::on_add_view(views::ViewType type, Session *session)

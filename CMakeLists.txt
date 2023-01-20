@@ -267,13 +267,11 @@ configure_file (
 set(pulseview_SOURCES
 	main.cpp
 	pv/application.cpp
-	pv/devicemanager.cpp
 	pv/globalsettings.cpp
 	pv/logging.cpp
 	pv/mainwindow.cpp
 	pv/metadata_obj.cpp
 	pv/session.cpp
-	pv/storesession.cpp
 	pv/util.cpp
 	pv/binding/binding.cpp
 	pv/binding/inputoutput.cpp
@@ -288,9 +286,7 @@ set(pulseview_SOURCES
 	pv/data/segment.cpp
 	pv/devices/device.cpp
 	pv/devices/file.cpp
-	pv/devices/hardwaredevice.cpp
 	pv/devices/inputfile.cpp
-	pv/devices/sessionfile.cpp
 	pv/prop/bool.cpp
 	pv/prop/double.cpp
 	pv/prop/enum.cpp
@@ -325,7 +321,6 @@ set(pulseview_SOURCES
 	pv/views/trace/standardbar.cpp
 	pv/widgets/colorbutton.cpp
 	pv/widgets/colorpopup.cpp
-	pv/widgets/devicetoolbutton.cpp
 	pv/widgets/exportmenu.cpp
 	pv/widgets/flowlayout.cpp
 	pv/widgets/importmenu.cpp
@@ -344,7 +339,6 @@ set(pulseview_HEADERS
 	pv/mainwindow.hpp
 	pv/metadata_obj.hpp
 	pv/session.hpp
-	pv/storesession.hpp
 	pv/binding/device.hpp
 	pv/data/analog.hpp
 	pv/data/analogsegment.hpp
@@ -381,7 +375,6 @@ set(pulseview_HEADERS
 	pv/views/trace/standardbar.hpp
 	pv/widgets/colorbutton.hpp
 	pv/widgets/colorpopup.hpp
-	pv/widgets/devicetoolbutton.hpp
 	pv/widgets/exportmenu.hpp
 	pv/widgets/flowlayout.hpp
 	pv/widgets/importmenu.hpp

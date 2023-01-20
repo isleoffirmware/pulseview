@@ -85,8 +85,6 @@ using sigrok::Option;
 
 namespace pv {
 
-class DeviceManager;
-
 namespace data {
 class Analog;
 class AnalogSegment;
@@ -126,13 +124,9 @@ public:
 	static shared_ptr<sigrok::Context> sr_context;
 
 public:
-	Session(DeviceManager &device_manager, QString name);
+	Session(QString name);
 
 	~Session();
-
-	DeviceManager& device_manager();
-
-	const DeviceManager& device_manager() const;
 
 	shared_ptr<sigrok::Session> session() const;
 
@@ -153,21 +147,10 @@ public:
 	 */
 	bool data_saved() const;
 
-	void save_setup(QSettings &settings) const;
-	void save_settings(QSettings &settings) const;
-	void restore_setup(QSettings &settings);
-	void restore_settings(QSettings &settings);
-
-	/**
-	 * Attempts to set device instance, may fall back to demo if needed
-	 */
-	void select_device(shared_ptr<devices::Device> device);
-
 	/**
 	 * Sets device instance that will be used in the next capture session.
 	 */
 	void set_device(shared_ptr<devices::Device> device);
-	void set_default_device();
 	bool using_file_device() const;
 
 	void load_init_file(const string &file_name, const string &format,
@@ -273,7 +256,6 @@ public Q_SLOTS:
 private:
 	bool shutting_down_;
 
-	DeviceManager &device_manager_;
 	shared_ptr<devices::Device> device_;
 	QString default_name_, name_, save_path_;
 

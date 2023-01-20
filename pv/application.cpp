@@ -143,7 +143,7 @@ void Application::on_setting_changed(const QString &key, const QVariant &value)
 		switch_language(value.toString());
 }
 
-void Application::collect_version_info(pv::DeviceManager &device_manager)
+void Application::collect_version_info()
 {
 	// Library versions and features
 	version_info_.emplace_back(applicationName(), applicationVersion());
@@ -210,22 +210,6 @@ void Application::collect_version_info(pv::DeviceManager &device_manager)
 	g_slist_free_full(l_orig, g_free);
 #endif
 
-	// Device drivers
-	for (auto& entry : device_manager.context()->drivers())
-		if (device_manager.driver_supported(entry.second))
-			driver_list_.emplace_back(QString::fromUtf8(entry.first.c_str()),
-				QString::fromUtf8(entry.second->long_name().c_str()));
-
-	// Input formats
-	for (auto& entry : device_manager.context()->input_formats())
-		input_format_list_.emplace_back(QString::fromUtf8(entry.first.c_str()),
-			QString::fromUtf8(entry.second->description().c_str()));
-
-	// Output formats
-	for (auto& entry : device_manager.context()->output_formats())
-		output_format_list_.emplace_back(QString::fromUtf8(entry.first.c_str()),
-			QString::fromUtf8(entry.second->description().c_str()));
-
 	// Protocol decoders
 #ifdef ENABLE_DECODE
 	GSList *sl = g_slist_copy((GSList *)srd_decoder_list());
@@ -255,21 +239,6 @@ void Application::print_version_info()
 	for (QString& entry : pd_path_list_)
 		cout << "  " << entry.toStdString() << endl;
 
-	cout << endl << "Supported hardware drivers:" << endl;
-	for (pair<QString, QString>& entry : driver_list_)
-		cout << "  " << entry.first.leftJustified(21, ' ').toStdString() <<
-		entry.second.toStdString() << endl;
-
-	cout << endl << "Supported input formats:" << endl;
-	for (pair<QString, QString>& entry : input_format_list_)
-		cout << "  " << entry.first.leftJustified(21, ' ').toStdString() <<
-		entry.second.toStdString() << endl;
-
-	cout << endl << "Supported output formats:" << endl;
-	for (pair<QString, QString>& entry : output_format_list_)
-		cout << "  " << entry.first.leftJustified(21, ' ').toStdString() <<
-		entry.second.toStdString() << endl;
-
 #ifdef ENABLE_DECODE
 	cout << endl << "Supported protocol decoders:" << endl;
 	for (pair<QString, QString>& entry : pd_list_)
@@ -291,21 +260,6 @@ vector<QString> Application::get_fw_path_list() const
 vector<QString> Application::get_pd_path_list() const
 {
 	return pd_path_list_;
-}
-
-vector< pair<QString, QString> > Application::get_driver_list() const
-{
-	return driver_list_;
-}
-
-vector< pair<QString, QString> > Application::get_input_format_list() const
-{
-	return input_format_list_;
-}
-
-vector< pair<QString, QString> > Application::get_output_format_list() const
-{
-	return output_format_list_;
 }
 
 vector< pair<QString, QString> > Application::get_pd_list() const
