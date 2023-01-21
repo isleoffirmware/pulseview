@@ -317,9 +317,7 @@ set(pulseview_SOURCES
 	pv/views/trace/standardbar.cpp
 	pv/widgets/colorbutton.cpp
 	pv/widgets/colorpopup.cpp
-	pv/widgets/exportmenu.cpp
 	pv/widgets/flowlayout.cpp
-	pv/widgets/importmenu.cpp
 	pv/widgets/popup.cpp
 	pv/widgets/popuptoolbutton.cpp
 	pv/widgets/sweeptimingwidget.cpp
@@ -371,9 +369,7 @@ set(pulseview_HEADERS
 	pv/views/trace/standardbar.hpp
 	pv/widgets/colorbutton.hpp
 	pv/widgets/colorpopup.hpp
-	pv/widgets/exportmenu.hpp
 	pv/widgets/flowlayout.hpp
-	pv/widgets/importmenu.hpp
 	pv/widgets/popup.hpp
 	pv/widgets/popuptoolbutton.hpp
 	pv/widgets/sweeptimingwidget.hpp
