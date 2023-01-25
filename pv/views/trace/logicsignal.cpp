@@ -34,6 +34,7 @@
 #include <pv/data/logic.hpp>
 #include <pv/data/logicsegment.hpp>
 #include <pv/data/signalbase.hpp>
+#include <pv/devicemanager.hpp>
 #include <pv/devices/device.hpp>
 #include <pv/globalsettings.hpp>
 #include <pv/session.hpp>
@@ -566,7 +567,7 @@ void LogicSignal::populate_popup_form(QWidget *parent, QFormLayout *form)
 void LogicSignal::modify_trigger()
 {
 	auto trigger = session_.session()->trigger();
-	auto new_trigger = pv::Session::sr_context->create_trigger("pulseview");
+	auto new_trigger = session_.device_manager().context()->create_trigger("pulseview");
 
 	if (trigger) {
 		for (auto stage : trigger->stages()) {

@@ -54,6 +54,7 @@
 #endif
 
 #include "pv/application.hpp"
+#include "pv/devicemanager.hpp"
 #include "pv/globalsettings.hpp"
 #include "pv/logging.hpp"
 #include "pv/mainwindow.hpp"
@@ -322,12 +323,15 @@ int main(int argc, char *argv[])
 		try {
 #endif
 
-		a.collect_version_info();
+		// Create the device manager, initialise the drivers
+		pv::DeviceManager device_manager(context, driver, do_scan);
+
+		a.collect_version_info(device_manager);
 		if (show_version) {
 			a.print_version_info();
 		} else {
 			// Initialise the main window
-			pv::MainWindow w;
+			pv::MainWindow w(device_manager);
 			w.show();
 
 			if (open_files.empty())

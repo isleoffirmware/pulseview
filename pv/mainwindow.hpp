@@ -42,6 +42,8 @@ class QVBoxLayout;
 
 namespace pv {
 
+class DeviceManager;
+
 namespace toolbars {
 class ContextBar;
 class MainBar;
@@ -69,7 +71,8 @@ private:
 	static const QString WindowTitle;
 
 public:
-	explicit MainWindow(QWidget *parent = nullptr);
+	explicit MainWindow(DeviceManager &device_manager,
+		QWidget *parent = nullptr);
 
 	~MainWindow();
 
@@ -119,6 +122,8 @@ private Q_SLOTS:
 	void on_view_show_analog_minor_grid_shortcut();
 
 private:
+	DeviceManager &device_manager_;
+
 	list< shared_ptr<Session> > sessions_;
 	shared_ptr<Session> last_focused_session_;
 

@@ -26,21 +26,36 @@
         <source>Unknown type supplied when attempting to query %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pv/devicemanager.cpp" line="274"/>
+        <source>Error when scanning device driver &apos;%1&apos;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="115"/>
+        <location filename="../pv/devicemanager.cpp" line="65"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/devicemanager.cpp" line="96"/>
+        <source>Scanning for devices that driver %1 can access...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="116"/>
         <source>Stack trace of previous crash:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="129"/>
+        <location filename="../main.cpp" line="130"/>
         <source>Don&apos;t show this message again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="132"/>
+        <location filename="../main.cpp" line="133"/>
         <source>When %1 last crashed, it created a stack trace.
 A human-readable form has been saved to disk and was written to the log. You may access it from the settings dialog.</source>
         <translation type="unfinished"></translation>
@@ -49,22 +64,22 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::MainWindow</name>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="64"/>
+        <location filename="../pv/mainwindow.cpp" line="66"/>
         <source>PulseView</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="209"/>
+        <location filename="../pv/mainwindow.cpp" line="212"/>
         <source>Session %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="320"/>
+        <location filename="../pv/mainwindow.cpp" line="348"/>
         <source>Confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/mainwindow.cpp" line="321"/>
+        <location filename="../pv/mainwindow.cpp" line="349"/>
         <source>There is unsaved data. Close anyway?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -72,43 +87,83 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::Session</name>
     <message>
-        <location filename="../pv/session.cpp" line="248"/>
+        <location filename="../pv/session.cpp" line="384"/>
+        <source>Can&apos;t restore generated signal of unknown type %1 (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/session.cpp" line="547"/>
+        <source>Failed to select device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/session.cpp" line="604"/>
         <source>Failed to open device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="336"/>
+        <location filename="../pv/session.cpp" line="710"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="337"/>
+        <location filename="../pv/session.cpp" line="711"/>
         <source>Unexpected input format: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="367"/>
+        <location filename="../pv/session.cpp" line="746"/>
         <source>Failed to load %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="393"/>
+        <location filename="../pv/session.cpp" line="782"/>
         <source>No active device set, can&apos;t start acquisition.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="406"/>
+        <location filename="../pv/session.cpp" line="795"/>
         <source>No channels enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="894"/>
+        <location filename="../pv/session.cpp" line="1293"/>
         <source>Out of memory, acquisition stopped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/session.cpp" line="1101"/>
+        <location filename="../pv/session.cpp" line="1500"/>
         <source>Can&apos;t handle more than 64 logic channels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>pv::StoreSession</name>
+    <message>
+        <location filename="../pv/storesession.cpp" line="114"/>
+        <source>Can&apos;t save logic channel without data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/storesession.cpp" line="130"/>
+        <source>Can&apos;t save analog channel without data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/storesession.cpp" line="142"/>
+        <source>No channels enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/storesession.cpp" line="167"/>
+        <source>Can&apos;t save range without sample data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pv/storesession.cpp" line="188"/>
+        <location filename="../pv/storesession.cpp" line="295"/>
+        <location filename="../pv/storesession.cpp" line="310"/>
+        <source>Error while saving: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -391,47 +446,47 @@ A human-readable form has been saved to disk and was written to the log. You may
 <context>
     <name>pv::views::trace::LogicSignal</name>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="422"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="423"/>
         <source>No trigger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="427"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="428"/>
         <source>Trigger on rising edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="432"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="433"/>
         <source>Trigger on high level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="437"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="438"/>
         <source>Trigger on falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="442"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="443"/>
         <source>Trigger on low level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="447"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="448"/>
         <source>Trigger on rising or falling edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="534"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="535"/>
         <source> pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="538"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="539"/>
         <source>Trace height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../pv/views/trace/logicsignal.cpp" line="562"/>
+        <location filename="../pv/views/trace/logicsignal.cpp" line="563"/>
         <source>Trigger</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1076,6 +1131,15 @@ until (condition)
     <message>
         <location filename="../pv/views/trace/view.cpp" line="1606"/>
         <source>Create marker here</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>pv::widgets::DeviceToolButton</name>
+    <message>
+        <location filename="../pv/widgets/devicetoolbutton.cpp" line="75"/>
+        <location filename="../pv/widgets/devicetoolbutton.cpp" line="82"/>
+        <source>&lt;No Device&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
