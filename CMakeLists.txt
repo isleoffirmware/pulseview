@@ -103,7 +103,7 @@ pkg_check_modules(PKGDEPS REQUIRED ${PKGDEPS})
 
 set(CMAKE_AUTOMOC TRUE)
 
-find_package(Qt5 5.15 COMPONENTS Core Gui LinguistTools Widgets Svg REQUIRED)
+find_package(Qt5 5.3 COMPONENTS Core Gui LinguistTools Widgets Svg REQUIRED)
 
 message(STATUS "Qt version: ${Qt5_VERSION}")
 
@@ -112,7 +112,7 @@ if(WIN32)
 	# https://github.com/mxe/mxe/issues/1642
 	# Not required (and doesn't work) on MSYS2.
 	if(NOT DEFINED ENV{MSYSTEM})
-		pkg_check_modules(QT5ALL REQUIRED Qt5Widgets>=5.15 Qt5Gui>=5.15 Qt5Svg>=5.15)
+		pkg_check_modules(QT5ALL REQUIRED Qt5Widgets>=5.3 Qt5Gui>=5.3 Qt5Svg>=5.3)
 	endif()
 endif()
 
