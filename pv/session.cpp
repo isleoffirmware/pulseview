@@ -45,6 +45,8 @@
 #include "devices/inputfile.hpp"
 #include "devices/sessionfile.hpp"
 
+#include "toolbars/mainbar.hpp"
+
 #include "views/trace/analogsignal.hpp"
 #include "views/trace/decodetrace.hpp"
 #include "views/trace/logicsignal.hpp"
@@ -199,6 +201,16 @@ const vector< shared_ptr<views::ViewBase> > Session::views() const
 shared_ptr<views::ViewBase> Session::main_view() const
 {
 	return main_view_;
+}
+
+void Session::set_main_bar(shared_ptr<pv::toolbars::MainBar> main_bar)
+{
+	main_bar_ = main_bar;
+}
+
+shared_ptr<pv::toolbars::MainBar> Session::main_bar() const
+{
+	return main_bar_;
 }
 
 bool Session::data_saved() const
@@ -745,6 +757,7 @@ void Session::load_file(QString file_name, QString setup_file_name,
 	} catch (Error& e) {
 		MainWindow::show_session_error(tr("Failed to load %1").arg(file_name), e.what());
 		set_default_device();
+		main_bar_->update_device_list();
 		return;
 	}
 
@@ -759,6 +772,8 @@ void Session::load_file(QString file_name, QString setup_file_name,
 		QSettings settings_storage(setup_file_name, QSettings::IniFormat);
 		restore_setup(settings_storage);
 	}
+
+	main_bar_->update_device_list();
 
 	start_capture([&, errorMessage](QString infoMessage) {
 		MainWindow::show_session_error(errorMessage, infoMessage); });
@@ -875,6 +890,9 @@ void Session::deregister_view(shared_ptr<views::ViewBase> view)
 
 	if (views_.empty()) {
 		main_view_.reset();
+
+		// Without a view there can be no main bar
+		main_bar_.reset();
 	}
 }
 
