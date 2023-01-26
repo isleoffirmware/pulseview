@@ -3,6 +3,8 @@
 #include <iostream>
 #include <deque>
 
+#include "../data/logicsegment.hpp"
+
 using std::shared_ptr;
 using std::deque;
 
@@ -15,28 +17,26 @@ const size_t BlockSize = 10 * 1024 * 1024;
 // void iof_generate_proto(const std::unordered_set< std::shared_ptr<pv::data::SignalData> >& all_signal_data)
 void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
 {
-    for (const deque< shared_ptr<pv::data::LogicSegment> >& segments : logic_data->logic_segments())
+    for (const shared_ptr<pv::data::LogicSegment>& s : logic_data->logic_segments())
     {
-        for (const shared_ptr<pv::data::LogicSegment>& s : segments)
+        // TODO: store like they do in storesession.c
+        const int unit_size = s->unit_size();
+        const int samples_per_block = BlockSize / unit_size;
+
+        uint64_t sample_count = s->get_sample_count();
+        uint64_t start_sample = 0;
+
+        while (sample_count > 0)
         {
-            // TODO: store like they do in storesession.c
-            const int unit_size = s->unit_size();
-            const int samples_per_block = BlockSize / unit_size;
+            const uint64_t packet_len = std::min((uint64_t)samples_per_block, sample_count);
+            const size_t data_size = packet_len * unit_size;
 
-            uint64_t sample_count = s->get_sample_count();
-            uint64_t start_sample = 0;
+            uint8_t* data = new uint8_t[data_size];
+            s->get_samples(start_sample, start_sample + packet_len, data);
 
-            while (sample_count > 0)
-            {
-                const uint64_t packet_len = std::min((uint64_t)samples_per_block, sample_count);
-                const size_t data_size = packet_len * unit_size;
-
-                uint8_t* data = new uint8_t[data_size];
-                s->get_samples(start_sample, start_sample + packet_len, data);
-
-                sample_count -= packet_len;
-                start_sample += packet_len;
-            }
+            delete[] data;
+            sample_count -= packet_len;
+            start_sample += packet_len;
         }
     }
 }
