@@ -1701,6 +1701,7 @@ void Session::data_feed_in(shared_ptr<sigrok::Device> device,
 
 		// VCD: processing is over, convert data to protobuf
 		// TODO: optimize by converting while processing
+		iof::iof_generate_proto(logic_data_);
 
 		break;
 
