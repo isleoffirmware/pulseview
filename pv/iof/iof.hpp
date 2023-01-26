@@ -1,6 +1,8 @@
 #ifndef IOF_HPP
 #define IOF_HPP
 
+#include <unordered_set>
+
 #include "../data/logic.hpp"
 
 namespace iof {
