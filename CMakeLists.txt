@@ -341,6 +341,7 @@ set(pulseview_SOURCES
 	pv/widgets/sweeptimingwidget.cpp
 	pv/widgets/timestampspinbox.cpp
 	pv/widgets/wellarray.cpp
+	pv/iof/iof.cpp
 )
 
 # This list includes only QObject derived class headers.

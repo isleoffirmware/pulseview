@@ -53,6 +53,8 @@
 #include "views/trace/signal.hpp"
 #include "views/trace/view.hpp"
 
+#include "iof/iof.hpp"
+
 #include <libsigrokcxx/libsigrokcxx.hpp>
 
 #ifdef ENABLE_FLOW
@@ -1696,6 +1698,10 @@ void Session::data_feed_in(shared_ptr<sigrok::Device> device,
 			cur_logic_segment_.reset();
 			cur_analog_segments_.clear();
 		}
+
+		// VCD: processing is over, convert data to protobuf
+		// TODO: optimize by converting while processing
+
 		break;
 
 	default:
