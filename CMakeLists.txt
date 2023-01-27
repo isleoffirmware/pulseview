@@ -140,6 +140,9 @@ endif()
 # This will set ${CMAKE_THREAD_LIBS_INIT} to the correct, OS-specific value.
 find_package(Threads REQUIRED)
 
+# Protobuf
+find_package(Protobuf REQUIRED)
+
 # Check for explicit link against libatomic
 #
 # Depending on the toolchain, linking a program using atomic functions may need
@@ -466,21 +469,6 @@ endif()
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
 #===============================================================================
-#= Translations
-#-------------------------------------------------------------------------------
-
-file(GLOB TS_FILES ${CMAKE_SOURCE_DIR}/l10n/*.ts)
-set_property(SOURCE ${TS_FILES} PROPERTY OUTPUT_LOCATION ${CMAKE_BINARY_DIR}/l10n)
-if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-	configure_file("translations.qrc" "translations.qrc" COPYONLY)
-endif ()
-
-qt5_add_translation(QM_FILES ${TS_FILES})
-qt5_create_translation(QM_FILES ${pulseview_SOURCES} ${TS_FILES})
-
-qt5_add_resources(pulseview_RESOURCES_RCC ${CMAKE_BINARY_DIR}/translations.qrc)
-
-#===============================================================================
 #= Global Definitions
 #-------------------------------------------------------------------------------
 
@@ -532,6 +520,8 @@ else()
 	include_directories(${PKGDEPS_INCLUDE_DIRS})
 endif()
 
+include_directories(${Protobuf_INCLUDE_DIRS})
+
 #===============================================================================
 #= Linker Configuration
 #-------------------------------------------------------------------------------
@@ -543,6 +533,7 @@ set(PULSEVIEW_LINK_LIBS
 	${QT_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	${LIBATOMIC_LIBRARY}
+	${Protobuf_LIBRARIES}
 )
 
 if(STATIC_PKGDEPS_LIBS)
