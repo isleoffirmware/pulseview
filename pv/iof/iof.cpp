@@ -2,10 +2,9 @@
 
 #include <iostream>
 #include <deque>
-// TODO: i think your boost install (1.74) is too old and doesn't have JSON (as of 1.78?)
-// #include <boost/json/src.hpp>
 
 #include "../data/logicsegment.hpp"
+#include "../generated/logic.pb.h"
 
 using std::shared_ptr;
 using std::deque;
@@ -37,9 +36,8 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
             s->get_samples(start_sample, start_sample + packet_len, data);
 
             // loop from data[0] to data[data_size - 1] and put data into JSON?
-            for(int &d : *data)
+            for(int i = 0; i < data_size; i++)
             {
-                std::cout << "help!";
             }
 
             delete[] data;

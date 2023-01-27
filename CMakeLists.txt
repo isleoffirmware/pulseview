@@ -468,6 +468,15 @@ endif()
 
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
+# Protobuf
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ../proto/logic.proto)
+list(APPEND pulseview_SOURCES
+	PROTO_SRCS
+)
+list(APPEND pulseview_HEADERS
+	PROTO_HDRS
+)
+
 #===============================================================================
 #= Global Definitions
 #-------------------------------------------------------------------------------
@@ -574,7 +583,7 @@ else()
 	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS})
+target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES})
 
 if(WIN32 AND NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	# Pass -mwindows so that no "DOS box" opens when PulseView is started.
