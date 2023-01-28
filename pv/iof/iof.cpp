@@ -4,10 +4,6 @@
 #include <fstream>
 #include <string>
 
-#ifdef ENABLE_DECODE
-#include <libsigrokdecode/libsigrokdecode.h> /* First, so we avoid a _POSIX_C_SOURCE warning. */
-#endif
-
 #include "../data/logicsegment.hpp"
 #include "../../proto/logic.pb.h"
 
@@ -34,7 +30,7 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
 
     for (const shared_ptr<pv::data::LogicSegment>& s : logic_data->logic_segments())
     {
-        // TODO: store like they do in storesession.c
+        // based off storesession.c
         const int unit_size = s->unit_size();
         const int samples_per_block = BLOCK_SIZE / unit_size;
 
@@ -68,13 +64,6 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
     }
 
     google::protobuf::ShutdownProtobufLibrary();
-
-#ifdef ENABLE_DECODE
-		// Destroy libsigrokdecode
-		srd_exit();
-#endif
-    // TODO: Crashing terminal and not getting "Cleaning up all drivers." message
-    exit(0);
 }
 
 }

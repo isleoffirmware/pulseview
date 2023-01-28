@@ -1702,6 +1702,11 @@ void Session::data_feed_in(shared_ptr<sigrok::Device> device,
 		// VCD: processing is over, convert data to protobuf
 		// TODO: optimize by converting while processing
 		iof::iof_generate_proto(logic_data_);
+		// Exit as soon as proto generation completes To unwind the stack
+		// properly and call all destructors you can't call _exit() from
+		// here. Instead throw an exception which is caught (only) in main
+		// and causes main to return.
+		throw;
 
 		break;
 
