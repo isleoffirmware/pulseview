@@ -1,28 +1,38 @@
 #include "iof.hpp"
 
 #include <iostream>
-#include <deque>
+#include <fstream>
+#include <string>
 
 #include "../data/logicsegment.hpp"
 #include "../../proto/logic.pb.h"
 
 using std::shared_ptr;
-using std::deque;
+using std::ios;
 
 namespace iof {
 
-const size_t BlockSize = 10 * 1024 * 1024;
+const size_t BLOCK_SIZE = 10 * 1024 * 1024;
+const std::string OUTPUT_FILENAME = "../../../output/logic_proto.bin";
 
 // TODO: scale to more than 1 channel
 // TODO: support analog
 // void iof_generate_proto(const std::unordered_set< std::shared_ptr<pv::data::SignalData> >& all_signal_data)
-void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
+int iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
 {
+    // Verify that the version of the library that we linked against is
+    // compatible with the version of the headers we compiled against.
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+    logic_proto::session logic_proto_session;
+    // TODO: set period properly
+    logic_proto_session.set_period(0);
+
     for (const shared_ptr<pv::data::LogicSegment>& s : logic_data->logic_segments())
     {
         // TODO: store like they do in storesession.c
         const int unit_size = s->unit_size();
-        const int samples_per_block = BlockSize / unit_size;
+        const int samples_per_block = BLOCK_SIZE / unit_size;
 
         uint64_t sample_count = s->get_sample_count();
         uint64_t start_sample = 0;
@@ -35,9 +45,9 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
             uint8_t* data = new uint8_t[data_size];
             s->get_samples(start_sample, start_sample + packet_len, data);
 
-            // loop from data[0] to data[data_size - 1] and put data into JSON?
-            for(int i = 0; i < data_size; i++)
+            for(size_t i = 0; i < data_size; i++)
             {
+                logic_proto_session.add_data(data[i]);
             }
 
             delete[] data;
@@ -45,6 +55,19 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
             start_sample += packet_len;
         }
     }
+
+    // Write to disk
+    std::fstream output(OUTPUT_FILENAME, ios::out | ios::trunc | ios::binary);
+    if (!logic_proto_session.SerializeToOstream(&output))
+    {
+        std::cerr << "Failed to write address book." << std::endl;
+        // TODO: handle returned errors
+        return -1;
+    }
+
+    google::protobuf::ShutdownProtobufLibrary();
+
+    return 0;
 }
 
 }

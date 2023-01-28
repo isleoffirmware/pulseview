@@ -412,9 +412,6 @@ set(pulseview_HEADERS
 	pv/widgets/sweeptimingwidget.hpp
 	pv/widgets/timestampspinbox.hpp
 	pv/widgets/wellarray.hpp
-	# Proto
-	proto/logic.pb.cc
-	proto/logic.pb.h
 )
 
 set(pulseview_RESOURCES
