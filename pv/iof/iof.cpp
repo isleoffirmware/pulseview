@@ -4,6 +4,10 @@
 #include <fstream>
 #include <string>
 
+#ifdef ENABLE_DECODE
+#include <libsigrokdecode/libsigrokdecode.h> /* First, so we avoid a _POSIX_C_SOURCE warning. */
+#endif
+
 #include "../data/logicsegment.hpp"
 #include "../../proto/logic.pb.h"
 
@@ -13,12 +17,12 @@ using std::ios;
 namespace iof {
 
 const size_t BLOCK_SIZE = 10 * 1024 * 1024;
-const std::string OUTPUT_FILENAME = "../../../output/logic_proto.bin";
+const std::string OUTPUT_FILENAME = "../output/logic_proto.bin";
 
 // TODO: scale to more than 1 channel
 // TODO: support analog
 // void iof_generate_proto(const std::unordered_set< std::shared_ptr<pv::data::SignalData> >& all_signal_data)
-int iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
+void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
 {
     // Verify that the version of the library that we linked against is
     // compatible with the version of the headers we compiled against.
@@ -60,14 +64,17 @@ int iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
     std::fstream output(OUTPUT_FILENAME, ios::out | ios::trunc | ios::binary);
     if (!logic_proto_session.SerializeToOstream(&output))
     {
-        std::cerr << "Failed to write address book." << std::endl;
-        // TODO: handle returned errors
-        return -1;
+        std::cerr << "Proto write error: " << std::strerror(errno) << "\n";
     }
 
     google::protobuf::ShutdownProtobufLibrary();
 
-    return 0;
+#ifdef ENABLE_DECODE
+		// Destroy libsigrokdecode
+		srd_exit();
+#endif
+    // TODO: Crashing terminal and not getting "Cleaning up all drivers." message
+    exit(0);
 }
 
 }

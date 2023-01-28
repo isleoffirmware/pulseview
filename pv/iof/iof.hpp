@@ -7,7 +7,7 @@
 
 namespace iof {
 
-int iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data);
+void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data);
 
 }
 
