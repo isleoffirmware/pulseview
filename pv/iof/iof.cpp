@@ -4,7 +4,7 @@
 #include <deque>
 
 #include "../data/logicsegment.hpp"
-#include "../generated/logic.pb.h"
+#include "../../proto/logic.pb.h"
 
 using std::shared_ptr;
 using std::deque;

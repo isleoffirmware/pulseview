@@ -19,7 +19,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(pulseview C CXX)
 
@@ -69,6 +69,12 @@ endif()
 #-------------------------------------------------------------------------------
 
 add_subdirectory(manual)
+
+#===============================================================================
+#= Protobuf
+#-------------------------------------------------------------------------------
+
+add_subdirectory(proto)
 
 #===============================================================================
 #= Dependencies
@@ -139,9 +145,6 @@ endif()
 # Find the platform's thread library (needed for C++11 threads).
 # This will set ${CMAKE_THREAD_LIBS_INIT} to the correct, OS-specific value.
 find_package(Threads REQUIRED)
-
-# Protobuf
-find_package(Protobuf REQUIRED)
 
 # Check for explicit link against libatomic
 #
@@ -409,6 +412,9 @@ set(pulseview_HEADERS
 	pv/widgets/sweeptimingwidget.hpp
 	pv/widgets/timestampspinbox.hpp
 	pv/widgets/wellarray.hpp
+	# Proto
+	proto/logic.pb.cc
+	proto/logic.pb.h
 )
 
 set(pulseview_RESOURCES
@@ -468,10 +474,6 @@ endif()
 
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
-# Protobuf
-# TODO: MOVE
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ../proto/logic.proto)
-
 #===============================================================================
 #= Global Definitions
 #-------------------------------------------------------------------------------
@@ -524,8 +526,6 @@ else()
 	include_directories(${PKGDEPS_INCLUDE_DIRS})
 endif()
 
-include_directories(${Protobuf_INCLUDE_DIRS})
-
 #===============================================================================
 #= Linker Configuration
 #-------------------------------------------------------------------------------
@@ -575,10 +575,10 @@ set(INPUT_FILES_LIST ${pulseview_SOURCES} ${pulseview_RESOURCES_RCC} ${QM_FILES}
 if(ANDROID)
 	add_library(${PROJECT_NAME} SHARED ${INPUT_FILES_LIST})
 else()
-	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
+	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES} proto)
 
 if(WIN32 AND NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	# Pass -mwindows so that no "DOS box" opens when PulseView is started.
