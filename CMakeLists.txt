@@ -469,13 +469,8 @@ endif()
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
 # Protobuf
+# TODO: MOVE
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ../proto/logic.proto)
-list(APPEND pulseview_SOURCES
-	PROTO_SRCS
-)
-list(APPEND pulseview_HEADERS
-	PROTO_HDRS
-)
 
 #===============================================================================
 #= Global Definitions
@@ -580,7 +575,7 @@ set(INPUT_FILES_LIST ${pulseview_SOURCES} ${pulseview_RESOURCES_RCC} ${QM_FILES}
 if(ANDROID)
 	add_library(${PROJECT_NAME} SHARED ${INPUT_FILES_LIST})
 else()
-	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
+	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST} ${PROTO_SRCS} ${PROTO_HDRS})
 endif()
 
 target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES})
