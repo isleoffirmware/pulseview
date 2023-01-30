@@ -44,8 +44,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 option(DISABLE_WERROR "Build without -Werror" TRUE)
 option(ENABLE_SIGNALS "Build with UNIX signals" TRUE)
 option(ENABLE_STACKTRACE "Enable stack trace when crashing" FALSE)
-# TODO: deal with this later
-option(ENABLE_DECODE "Build with libsigrokdecode" FALSE)
+option(ENABLE_DECODE "Build with libsigrokdecode" TRUE)
 option(ENABLE_FLOW "Build with libsigrokflow" FALSE)
 option(ENABLE_TESTS "Enable unit tests" FALSE)
 option(STATIC_PKGDEPS_LIBS "Statically link to (pkg-config) libraries" FALSE)
@@ -103,7 +102,7 @@ pkg_check_modules(PKGDEPS REQUIRED ${PKGDEPS})
 
 set(CMAKE_AUTOMOC TRUE)
 
-find_package(Qt5 5.15 COMPONENTS Core Gui LinguistTools Widgets Svg REQUIRED)
+find_package(Qt5 5.3 COMPONENTS Core Gui LinguistTools Widgets Svg REQUIRED)
 
 message(STATUS "Qt version: ${Qt5_VERSION}")
 
@@ -112,7 +111,7 @@ if(WIN32)
 	# https://github.com/mxe/mxe/issues/1642
 	# Not required (and doesn't work) on MSYS2.
 	if(NOT DEFINED ENV{MSYSTEM})
-		pkg_check_modules(QT5ALL REQUIRED Qt5Widgets>=5.15 Qt5Gui>=5.15 Qt5Svg>=5.15)
+		pkg_check_modules(QT5ALL REQUIRED Qt5Widgets>=5.3 Qt5Gui>=5.3 Qt5Svg>=5.3)
 	endif()
 endif()
 
@@ -267,11 +266,13 @@ configure_file (
 set(pulseview_SOURCES
 	main.cpp
 	pv/application.cpp
+	pv/devicemanager.cpp
 	pv/globalsettings.cpp
 	pv/logging.cpp
 	pv/mainwindow.cpp
 	pv/metadata_obj.cpp
 	pv/session.cpp
+	pv/storesession.cpp
 	pv/util.cpp
 	pv/binding/binding.cpp
 	pv/binding/inputoutput.cpp
@@ -286,13 +287,23 @@ set(pulseview_SOURCES
 	pv/data/segment.cpp
 	pv/devices/device.cpp
 	pv/devices/file.cpp
+	pv/devices/hardwaredevice.cpp
 	pv/devices/inputfile.cpp
+	pv/devices/sessionfile.cpp
+	pv/dialogs/connect.cpp
+	pv/dialogs/inputoutputoptions.cpp
+	pv/dialogs/settings.cpp
+	pv/dialogs/storeprogress.cpp
+	pv/popups/deviceoptions.cpp
+	pv/popups/channels.cpp
 	pv/prop/bool.cpp
 	pv/prop/double.cpp
 	pv/prop/enum.cpp
 	pv/prop/int.cpp
 	pv/prop/property.cpp
 	pv/prop/string.cpp
+	pv/subwindows/subwindowbase.cpp
+	pv/toolbars/mainbar.cpp
 	pv/views/trace/analogsignal.cpp
 	pv/views/trace/cursor.cpp
 	pv/views/trace/cursorpair.cpp
@@ -321,6 +332,7 @@ set(pulseview_SOURCES
 	pv/views/trace/standardbar.cpp
 	pv/widgets/colorbutton.cpp
 	pv/widgets/colorpopup.cpp
+	pv/widgets/devicetoolbutton.cpp
 	pv/widgets/exportmenu.cpp
 	pv/widgets/flowlayout.cpp
 	pv/widgets/importmenu.cpp
@@ -339,6 +351,7 @@ set(pulseview_HEADERS
 	pv/mainwindow.hpp
 	pv/metadata_obj.hpp
 	pv/session.hpp
+	pv/storesession.hpp
 	pv/binding/device.hpp
 	pv/data/analog.hpp
 	pv/data/analogsegment.hpp
@@ -346,12 +359,20 @@ set(pulseview_HEADERS
 	pv/data/logicsegment.hpp
 	pv/data/mathsignal.hpp
 	pv/data/signalbase.hpp
+	pv/dialogs/connect.hpp
+	pv/dialogs/inputoutputoptions.hpp
+	pv/dialogs/settings.hpp
+	pv/dialogs/storeprogress.hpp
+	pv/popups/channels.hpp
+	pv/popups/deviceoptions.hpp
 	pv/prop/bool.hpp
 	pv/prop/double.hpp
 	pv/prop/enum.hpp
 	pv/prop/int.hpp
 	pv/prop/property.hpp
 	pv/prop/string.hpp
+	pv/subwindows/subwindowbase.hpp
+	pv/toolbars/mainbar.hpp
 	pv/views/trace/analogsignal.hpp
 	pv/views/trace/cursor.hpp
 	pv/views/trace/flag.hpp
@@ -375,6 +396,7 @@ set(pulseview_HEADERS
 	pv/views/trace/standardbar.hpp
 	pv/widgets/colorbutton.hpp
 	pv/widgets/colorpopup.hpp
+	pv/widgets/devicetoolbutton.hpp
 	pv/widgets/exportmenu.hpp
 	pv/widgets/flowlayout.hpp
 	pv/widgets/importmenu.hpp
@@ -402,6 +424,9 @@ if(ENABLE_DECODE)
 		pv/data/decode/decoder.cpp
 		pv/data/decode/row.cpp
 		pv/data/decode/rowdata.cpp
+		pv/subwindows/decoder_selector/item.cpp
+		pv/subwindows/decoder_selector/model.cpp
+		pv/subwindows/decoder_selector/subwindow.cpp
 		pv/views/decoder_binary/view.cpp
 		pv/views/decoder_binary/QHexView.cpp
 		pv/views/tabular_decoder/model.cpp
@@ -413,6 +438,7 @@ if(ENABLE_DECODE)
 
 	list(APPEND pulseview_HEADERS
 		pv/data/decodesignal.hpp
+		pv/subwindows/decoder_selector/subwindow.hpp
 		pv/views/decoder_binary/view.hpp
 		pv/views/decoder_binary/QHexView.hpp
 		pv/views/tabular_decoder/view.hpp

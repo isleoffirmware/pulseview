@@ -17,39 +17,38 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PULSEVIEW_PV_DEVICES_FILE_HPP
-#define PULSEVIEW_PV_DEVICES_FILE_HPP
+#ifndef PULSEVIEW_PV_DEVICES_SESSIONFILE_HPP
+#define PULSEVIEW_PV_DEVICES_SESSIONFILE_HPP
 
-#include <string>
+#include <memory>
 
-#include "device.hpp"
+#include "file.hpp"
 
+using std::shared_ptr;
 using std::string;
+
+namespace sigrok {
+class Context;
+} // sigrok
 
 namespace pv {
 namespace devices {
 
-class File : public Device
+class SessionFile final : public File
 {
-protected:
-	File(const string &file_name);
-
 public:
-	/**
-	 * Builds the full name. It contains all the fields.
-	 */
-	string full_name() const;
+	SessionFile(const shared_ptr<sigrok::Context> context,
+		const string &file_name);
 
-	/**
-	 * Builds the display name. It only contains fields as required.
-	 */
-	string display_name(const DeviceManager&) const;
+	void open();
 
-protected:
-	string file_name_;
+	void close();
+
+private:
+	const shared_ptr<sigrok::Context> context_;
 };
 
 } // namespace devices
 } // namespace pv
 
-#endif // PULSEVIEW_PV_DEVICES_FILE_HPP
+#endif // PULSEVIEW_PV_DEVICES_SESSIONFILE_HPP

@@ -30,6 +30,7 @@
 #include <QToolButton>
 
 #include "session.hpp"
+#include "subwindows/subwindowbase.hpp"
 
 using std::list;
 using std::map;
@@ -41,6 +42,8 @@ struct srd_decoder;
 class QVBoxLayout;
 
 namespace pv {
+
+class DeviceManager;
 
 namespace toolbars {
 class ContextBar;
@@ -69,7 +72,8 @@ private:
 	static const QString WindowTitle;
 
 public:
-	explicit MainWindow(QWidget *parent = nullptr);
+	explicit MainWindow(DeviceManager &device_manager,
+		QWidget *parent = nullptr);
 
 	~MainWindow();
 
@@ -81,6 +85,9 @@ public:
 
 	void remove_view(shared_ptr<ViewBase> view);
 
+	shared_ptr<subwindows::SubWindowBase> add_subwindow(
+		subwindows::SubWindowType type, Session &session);
+
 	shared_ptr<Session> add_session();
 
 	void remove_session(shared_ptr<Session> session);
@@ -90,8 +97,17 @@ public:
 
 	void add_default_session();
 
+	void save_sessions();
+	void restore_sessions();
+
 private:
 	void setup_ui();
+	void update_acq_button(Session *session);
+
+	void save_ui_settings();
+	void restore_ui_settings();
+
+	shared_ptr<Session> get_tab_session(int index) const;
 
 	void closeEvent(QCloseEvent *event);
 
@@ -105,27 +121,45 @@ public Q_SLOTS:
 private Q_SLOTS:
 	void on_add_view(ViewType type, Session *session);
 
+	void on_focus_changed();
+	void on_focused_session_changed(shared_ptr<Session> session);
+
+	void on_new_session_clicked();
+	void on_settings_clicked();
+
 	void on_session_name_changed();
 	void on_session_device_changed();
 	void on_session_capture_state_changed(int state);
 
 	void on_new_view(Session *session, int view_type);
+	void on_view_close_clicked();
+
+	void on_tab_changed(int index);
+	void on_tab_close_requested(int index);
 
 	void on_show_decoder_selector(Session *session);
+	void on_sub_window_close_clicked();
 
 	void on_view_colored_bg_shortcut();
 	void on_view_sticky_scrolling_shortcut();
 	void on_view_show_sampling_points_shortcut();
 	void on_view_show_analog_minor_grid_shortcut();
 
+	void on_close_current_tab();
+
 private:
+	DeviceManager &device_manager_;
+
 	list< shared_ptr<Session> > sessions_;
 	shared_ptr<Session> last_focused_session_;
 
 	map< QDockWidget*, shared_ptr<views::ViewBase> > view_docks_;
+	map< QDockWidget*, shared_ptr<subwindows::SubWindowBase> > sub_windows_;
 
 	map< shared_ptr<Session>, QMainWindow*> session_windows_;
 
+	QWidget *static_tab_widget_;
+	QToolButton *new_session_button_, *run_stop_button_, *settings_button_;
 	QTabWidget session_selector_;
 
 	QIcon icon_red_;

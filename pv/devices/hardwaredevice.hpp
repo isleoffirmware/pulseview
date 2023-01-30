@@ -17,39 +17,54 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PULSEVIEW_PV_DEVICES_FILE_HPP
-#define PULSEVIEW_PV_DEVICES_FILE_HPP
-
-#include <string>
+#ifndef PULSEVIEW_PV_DEVICES_HARDWAREDEVICE_HPP
+#define PULSEVIEW_PV_DEVICES_HARDWAREDEVICE_HPP
 
 #include "device.hpp"
 
+using std::shared_ptr;
 using std::string;
+
+namespace sigrok {
+class Context;
+class HardwareDevice;
+} // sigrok
 
 namespace pv {
 namespace devices {
 
-class File : public Device
+class HardwareDevice final : public Device
 {
-protected:
-	File(const string &file_name);
-
 public:
+	HardwareDevice(const shared_ptr<sigrok::Context> &context,
+		shared_ptr<sigrok::HardwareDevice> device);
+
+	~HardwareDevice();
+
+	shared_ptr<sigrok::HardwareDevice> hardware_device() const;
+
 	/**
-	 * Builds the full name. It contains all the fields.
+	 * Builds the full name. It only contains all the fields.
 	 */
 	string full_name() const;
 
 	/**
 	 * Builds the display name. It only contains fields as required.
+	 * @param device_manager a reference to the device manager is needed
+	 * so that other similarly titled devices can be detected.
 	 */
-	string display_name(const DeviceManager&) const;
+	string display_name(const DeviceManager &device_manager) const;
 
-protected:
-	string file_name_;
+	void open();
+
+	void close();
+
+private:
+	const shared_ptr<sigrok::Context> context_;
+	bool device_open_;
 };
 
 } // namespace devices
 } // namespace pv
 
-#endif // PULSEVIEW_PV_DEVICES_FILE_HPP
+#endif // PULSEVIEW_PV_DEVICES_HARDWAREDEVICE_HPP

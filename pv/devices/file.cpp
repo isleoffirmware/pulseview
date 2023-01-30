@@ -36,7 +36,7 @@ string File::full_name() const
 	return file_name_;
 }
 
-string File::display_name() const
+string File::display_name(const DeviceManager&) const
 {
 	return boost::filesystem::path(file_name_).filename().string();
 }

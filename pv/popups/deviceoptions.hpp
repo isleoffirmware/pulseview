@@ -1,7 +1,7 @@
 /*
  * This file is part of the PulseView project.
  *
- * Copyright (C) 2015 Joel Holdsworth <joel@airwebreathe.org.uk>
+ * Copyright (C) 2012 Joel Holdsworth <joel@airwebreathe.org.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,39 +17,44 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PULSEVIEW_PV_DEVICES_FILE_HPP
-#define PULSEVIEW_PV_DEVICES_FILE_HPP
+#ifndef PULSEVIEW_PV_POPUPS_DEVICEOPTIONS_HPP
+#define PULSEVIEW_PV_POPUPS_DEVICEOPTIONS_HPP
 
-#include <string>
+#include <QGroupBox>
+#include <QVBoxLayout>
 
-#include "device.hpp"
+#include <pv/binding/device.hpp>
+#include <pv/widgets/popup.hpp>
 
-using std::string;
+using std::shared_ptr;
+
+namespace sigrok {
+	class Device;
+}
 
 namespace pv {
-namespace devices {
+namespace popups {
 
-class File : public Device
+class DeviceOptions : public pv::widgets::Popup
 {
-protected:
-	File(const string &file_name);
+	Q_OBJECT
 
 public:
-	/**
-	 * Builds the full name. It contains all the fields.
-	 */
-	string full_name() const;
+	DeviceOptions(shared_ptr<sigrok::Device> device, QWidget *parent);
 
-	/**
-	 * Builds the display name. It only contains fields as required.
-	 */
-	string display_name(const DeviceManager&) const;
+	pv::binding::Device& binding();
 
-protected:
-	string file_name_;
+	virtual void show();
+
+private:
+	shared_ptr<sigrok::Device> device_;
+
+	QVBoxLayout layout_;
+
+	pv::binding::Device binding_;
 };
 
-} // namespace devices
+} // namespace popups
 } // namespace pv
 
-#endif // PULSEVIEW_PV_DEVICES_FILE_HPP
+#endif // PULSEVIEW_PV_POPUPS_DEVICEOPTIONS_HPP
