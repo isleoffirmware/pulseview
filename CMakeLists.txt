@@ -19,7 +19,7 @@
 ## along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.22.1)
 
 project(pulseview C CXX)
 
@@ -69,6 +69,12 @@ endif()
 #-------------------------------------------------------------------------------
 
 add_subdirectory(manual)
+
+#===============================================================================
+#= Protobuf
+#-------------------------------------------------------------------------------
+
+add_subdirectory(proto)
 
 #===============================================================================
 #= Dependencies
@@ -341,6 +347,7 @@ set(pulseview_SOURCES
 	pv/widgets/sweeptimingwidget.cpp
 	pv/widgets/timestampspinbox.cpp
 	pv/widgets/wellarray.cpp
+	pv/iof/iof.cpp
 )
 
 # This list includes only QObject derived class headers.
@@ -465,21 +472,6 @@ endif()
 qt5_add_resources(pulseview_RESOURCES_RCC ${pulseview_RESOURCES})
 
 #===============================================================================
-#= Translations
-#-------------------------------------------------------------------------------
-
-file(GLOB TS_FILES ${CMAKE_SOURCE_DIR}/l10n/*.ts)
-set_property(SOURCE ${TS_FILES} PROPERTY OUTPUT_LOCATION ${CMAKE_BINARY_DIR}/l10n)
-if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-	configure_file("translations.qrc" "translations.qrc" COPYONLY)
-endif ()
-
-qt5_add_translation(QM_FILES ${TS_FILES})
-qt5_create_translation(QM_FILES ${pulseview_SOURCES} ${TS_FILES})
-
-qt5_add_resources(pulseview_RESOURCES_RCC ${CMAKE_BINARY_DIR}/translations.qrc)
-
-#===============================================================================
 #= Global Definitions
 #-------------------------------------------------------------------------------
 
@@ -542,6 +534,7 @@ set(PULSEVIEW_LINK_LIBS
 	${QT_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	${LIBATOMIC_LIBRARY}
+	${Protobuf_LIBRARIES}
 )
 
 if(STATIC_PKGDEPS_LIBS)
@@ -582,7 +575,7 @@ else()
 	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS})
+target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES} proto)
 
 if(WIN32 AND NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	# Pass -mwindows so that no "DOS box" opens when PulseView is started.
