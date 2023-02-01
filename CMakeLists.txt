@@ -71,12 +71,6 @@ endif()
 add_subdirectory(manual)
 
 #===============================================================================
-#= Protobuf
-#-------------------------------------------------------------------------------
-
-add_subdirectory(proto)
-
-#===============================================================================
 #= Dependencies
 #-------------------------------------------------------------------------------
 
@@ -216,6 +210,11 @@ if(ENABLE_DECODE)
 	" HAVE_SRD_SESSION_SEND_EOF)
 	cmake_pop_check_state()
 endif()
+
+# JSON
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(json)
+
 
 #===============================================================================
 #= System Introspection
@@ -534,7 +533,6 @@ set(PULSEVIEW_LINK_LIBS
 	${QT_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	${LIBATOMIC_LIBRARY}
-	${Protobuf_LIBRARIES}
 )
 
 if(STATIC_PKGDEPS_LIBS)
@@ -575,7 +573,7 @@ else()
 	add_executable(${PROJECT_NAME} ${INPUT_FILES_LIST})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} ${Protobuf_LIBRARIES} proto)
+target_link_libraries(${PROJECT_NAME} ${PULSEVIEW_LINK_LIBS} nlohmann_json::nlohmann_json)
 
 if(WIN32 AND NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	# Pass -mwindows so that no "DOS box" opens when PulseView is started.
