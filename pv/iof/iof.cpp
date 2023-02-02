@@ -3,30 +3,31 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <array>
+#include <vector>
 
 #include "../data/logicsegment.hpp"
-#include "../../proto/logic.pb.h"
+// TODO: install locally instead of using submodule
+#include "../../json/single_include/nlohmann/json.hpp"
 
 using std::shared_ptr;
 using std::ios;
+using json = nlohmann::json;
 
 namespace iof {
 
 const size_t BLOCK_SIZE = 10 * 1024 * 1024;
-const std::string OUTPUT_FILENAME = "../output/logic_proto.bin";
+const std::string OUTPUT_FILENAME = "../output/output.json";
 
 // TODO: scale to more than 1 channel
 // TODO: support analog
-// void iof_generate_proto(const std::unordered_set< std::shared_ptr<pv::data::SignalData> >& all_signal_data)
-void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
+void iof_generate_json(const shared_ptr<pv::data::Logic>& logic_data)
 {
-    // Verify that the version of the library that we linked against is
-    // compatible with the version of the headers we compiled against.
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-    logic_proto::session logic_proto_session;
+    json j;
     // TODO: set period properly
-    logic_proto_session.set_period(0);
+    j["period"] = 0;
+
+    std::vector<uint8_t> results;
 
     for (const shared_ptr<pv::data::LogicSegment>& s : logic_data->logic_segments())
     {
@@ -45,10 +46,8 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
             uint8_t* data = new uint8_t[data_size];
             s->get_samples(start_sample, start_sample + packet_len, data);
 
-            for(size_t i = 0; i < data_size; i++)
-            {
-                logic_proto_session.add_data(data[i]);
-            }
+            // TODO: speed this up - avoid copying
+            results.insert(results.end(), &data[0], &data[data_size - 1]);
 
             delete[] data;
             sample_count -= packet_len;
@@ -56,14 +55,12 @@ void iof_generate_proto(const shared_ptr<pv::data::Logic>& logic_data)
         }
     }
 
-    // Write to disk
-    std::fstream output(OUTPUT_FILENAME, ios::out | ios::trunc | ios::binary);
-    if (!logic_proto_session.SerializeToOstream(&output))
-    {
-        std::cerr << "Proto write error: " << std::strerror(errno) << "\n";
-    }
+    j["data"] = results;
 
-    google::protobuf::ShutdownProtobufLibrary();
+    std::ofstream o(OUTPUT_FILENAME);
+    o << j << std::endl;
+
+    // TODO: verify generated JSON against schema
 }
 
 }
