@@ -24,8 +24,9 @@ const std::string OUTPUT_FILENAME = "../output/output.json";
 void iof_generate_json(const shared_ptr<pv::data::Logic>& logic_data)
 {
     json j;
-    // TODO: set period properly
-    j["period"] = 0;
+
+    // samplerate is in Hz and accounts for downsampling
+    j["samplerate_hz"] = logic_data->get_samplerate();
 
     std::vector<uint8_t> results;
 
