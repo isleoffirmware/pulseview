@@ -24,8 +24,7 @@ const std::string OUTPUT_FILENAME = "../output/output.json";
 void iof_generate_json(const shared_ptr<pv::data::Logic>& logic_data)
 {
     json j;
-    // TODO: set period properly
-    j["period"] = 0;
+    j["period"] = logic_data->get_samplerate();
 
     std::vector<uint8_t> results;
 
